@@ -87,7 +87,7 @@ export default function ResultCard({
             >
               {isStore ? labels.results.storeTitle : labels.results.sellTitle}
             </h2>
-            {!isStore && SELL_NOW_RW !== "" && (
+            {!isStore && (
               <p className="mt-2 text-sm text-slate-300">{SELL_NOW_RW}</p>
             )}
 
@@ -133,6 +133,18 @@ export default function ResultCard({
             className="text-sm font-semibold text-teal-200 underline decoration-teal-200/40 underline-offset-4 transition hover:text-teal-100"
           >
             {labels.results.detailsLink}
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("formulas")?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              })
+            }
+            className="mt-3 block text-xs text-slate-400 underline decoration-slate-500/50 underline-offset-4 transition hover:text-teal-200"
+          >
+            {labels.results.formulasLink}
           </button>
           {reliablePattern && hasOutlook && (
             <p className="mt-3 text-sm leading-6 text-orange-200">

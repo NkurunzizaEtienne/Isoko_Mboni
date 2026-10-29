@@ -414,6 +414,10 @@ export default function App() {
             hasDataGap
             option={chosenHorizon ?? null}
             month={resultMonth}
+            result={decision}
+            priceNow={priceNow}
+            storageCostPerMonth={storageCostPerMonth}
+            loanInterestPctYear={loanInterestPctYear}
           />
         </section>
 
