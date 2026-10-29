@@ -1,230 +1,324 @@
 
-import type { Crop } from "../types";
 import { labels } from "../labels";
+import type { Crop } from "../types";
 
-type MarketOption = {
-  value: string;
-  label: string;
-};
-
-type InputsPanelProps = {
+interface Props {
   crops: Crop[];
   cropId: string;
   marketChoice: string;
-  marketOptions: MarketOption[];
+  marketOptions: string[];
   harvestMonth: number;
-  months: string[];
-  storageMonths: number;
-  priceNow: string;
-  storageCost: string;
-  lossPct: string;
-  hasUsableHistory: boolean;
+  maxMonths: number;
+  priceText: string;
+  quantityText: string;
+  storageCostText: string;
+  lossText: string;
+  interestText: string;
+  cashText: string;
+  moreOptions: boolean;
   isUsingNationalFallback: boolean;
+  hasHistory: boolean;
   onCropChange: (value: string) => void;
   onMarketChange: (value: string) => void;
   onHarvestMonthChange: (value: number) => void;
-  onStorageMonthsChange: (value: number) => void;
-  onPriceNowChange: (value: string) => void;
+  onMaxMonthsChange: (value: number) => void;
+  onPriceChange: (value: string) => void;
+  onQuantityChange: (value: string) => void;
   onStorageCostChange: (value: string) => void;
-  onLossPctChange: (value: string) => void;
-};
+  onLossChange: (value: string) => void;
+  onInterestChange: (value: string) => void;
+  onCashChange: (value: string) => void;
+  onMoreOptionsChange: (value: boolean) => void;
+}
 
 const fieldClass =
-  "mt-2 block min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-base text-slate-950 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+  "mt-2 w-full rounded-xl border border-white/10 bg-[#0b1425] px-3.5 py-3 text-base text-white outline-none transition placeholder:text-slate-600 focus:border-teal-300 focus:ring-2 focus:ring-teal-300/15";
 
-const labelClass = "block text-sm font-semibold text-slate-800";
+const labelClass = "text-sm font-medium text-slate-200";
+const helperClass = "mt-1.5 text-xs leading-5 text-slate-400";
 
-export function InputsPanel({
-  crops,
-  cropId,
-  marketChoice,
-  marketOptions,
-  harvestMonth,
-  months,
-  storageMonths,
-  priceNow,
-  storageCost,
-  lossPct,
-  hasUsableHistory,
-  isUsingNationalFallback,
-  onCropChange,
-  onMarketChange,
-  onHarvestMonthChange,
-  onStorageMonthsChange,
-  onPriceNowChange,
-  onStorageCostChange,
-  onLossPctChange,
-}: InputsPanelProps) {
+function NumberField({
+  id,
+  label,
+  value,
+  onChange,
+  helper,
+  suffix,
+  min = 0,
+  step = "any",
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  helper?: string;
+  suffix?: string;
+  min?: number;
+  step?: string;
+}) {
   return (
-    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
-        Decision inputs
-      </p>
-      <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-        {labels.inputs.title}
-      </h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">
-        {labels.inputs.description}
-      </p>
+    <div>
+      <label className={labelClass} htmlFor={id}>{label}</label>
+      <div className="relative">
+        <input
+          id={id}
+          type="number"
+          min={min}
+          step={step}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className={`${fieldClass} ${suffix ? "pr-20" : ""}`}
+        />
+        {suffix && (
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-slate-400">
+            {suffix}
+          </span>
+        )}
+      </div>
+      {helper && <p className={helperClass}>{helper}</p>}
+    </div>
+  );
+}
 
-      <div className="mt-6 space-y-5">
+export default function InputsPanel(props: Props) {
+  const {
+    crops,
+    cropId,
+    marketChoice,
+    marketOptions,
+    harvestMonth,
+    maxMonths,
+    priceText,
+    quantityText,
+    storageCostText,
+    lossText,
+    interestText,
+    cashText,
+    moreOptions,
+    isUsingNationalFallback,
+    hasHistory,
+    onCropChange,
+    onMarketChange,
+    onHarvestMonthChange,
+    onMaxMonthsChange,
+    onPriceChange,
+    onQuantityChange,
+    onStorageCostChange,
+    onLossChange,
+    onInterestChange,
+    onCashChange,
+    onMoreOptionsChange,
+  } = props;
+
+  return (
+    <div className="rounded-3xl border border-white/10 bg-[#111b2c] p-4 shadow-2xl shadow-black/10 sm:p-7">
+      <div className="mb-6">
+        <h2 className="font-serif text-2xl text-white sm:text-3xl">
+          {labels.inputs.heading}
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-slate-400">
+          {labels.inputs.intro}
+        </p>
+      </div>
+
+      <div className="grid gap-x-6 gap-y-5 md:grid-cols-2 xl:grid-cols-3">
         <div>
-          <label className={labelClass} htmlFor="crop">
+          <label htmlFor="crop" className={labelClass}>
             {labels.inputs.crop}
           </label>
           <select
-            className={fieldClass}
             id="crop"
             value={cropId}
             onChange={(event) => onCropChange(event.target.value)}
+            className={fieldClass}
           >
             {crops.map((crop) => (
-              <option key={crop.id} value={crop.id}>
-                {crop.name}
-              </option>
+              <option key={crop.id} value={crop.id}>{crop.name}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className={labelClass} htmlFor="market">
+          <label htmlFor="market" className={labelClass}>
             {labels.inputs.market}
           </label>
           <select
-            className={fieldClass}
             id="market"
             value={marketChoice}
             onChange={(event) => onMarketChange(event.target.value)}
+            className={fieldClass}
           >
             {marketOptions.map((market) => (
-              <option key={market.value} value={market.value}>
-                {market.label}
-              </option>
+              <option key={market} value={market}>{market}</option>
             ))}
           </select>
-
-          {isUsingNationalFallback && (
-            <p
-              role="status"
-              className="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950"
-            >
-              {labels.inputs.nationalFallback}
-            </p>
-          )}
-
-          {!hasUsableHistory && (
-            <p
-              role="status"
-              className="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950"
-            >
-              {labels.inputs.noHistory}
-            </p>
-          )}
         </div>
 
         <div>
-          <label className={labelClass} htmlFor="harvest-month">
+          <label htmlFor="harvest-month" className={labelClass}>
             {labels.inputs.harvestMonth}
           </label>
           <select
-            className={fieldClass}
             id="harvest-month"
             value={harvestMonth}
-            onChange={(event) =>
-              onHarvestMonthChange(Number(event.target.value))
-            }
-          >
-            {months.map((month, index) => (
-              <option key={month} value={index + 1}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className={labelClass} htmlFor="storage-months">
-            {labels.inputs.storageMonths}
-          </label>
-          <select
+            onChange={(event) => onHarvestMonthChange(Number(event.target.value))}
             className={fieldClass}
-            id="storage-months"
-            value={storageMonths}
-            onChange={(event) =>
-              onStorageMonthsChange(Number(event.target.value))
-            }
           >
-            {[1, 2, 3, 4, 5, 6].map((monthCount) => (
-              <option key={monthCount} value={monthCount}>
-                {monthCount} {monthCount === 1 ? "month" : "months"}
-              </option>
+            {labels.months.map((month, index) => (
+              <option key={month} value={index + 1}>{month}</option>
             ))}
           </select>
         </div>
 
-        <div>
-          <label className={labelClass} htmlFor="current-price">
-            {labels.inputs.currentPrice}
-          </label>
+        <div className="rounded-2xl border border-white/5 bg-[#0c1526] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <label htmlFor="max-months" className={labelClass}>
+              {labels.inputs.storeFor}
+            </label>
+            <span className="rounded-lg bg-orange-300/10 px-2.5 py-1 text-sm font-semibold text-orange-200">
+              {maxMonths} {labels.inputs.monthsUnit}
+            </span>
+          </div>
           <input
-            className={fieldClass}
-            id="current-price"
-            type="number"
-            min="0.01"
-            step="any"
-            inputMode="decimal"
-            value={priceNow}
-            onChange={(event) => onPriceNowChange(event.target.value)}
-            placeholder="Enter current price"
+            id="max-months"
+            type="range"
+            min={1}
+            max={6}
+            step={1}
+            value={maxMonths}
+            onChange={(event) => onMaxMonthsChange(Number(event.target.value))}
+            className="mt-4 w-full cursor-pointer accent-orange-400"
           />
-          <p className="mt-1.5 text-xs leading-5 text-slate-500">
-            Prefilled from the latest available price point. Edit it to match
-            the price offered to you.
+          <div className="mt-1 flex justify-between text-xs text-slate-500">
+            <span>1</span><span>6</span>
+          </div>
+          <p className={helperClass}>{labels.inputs.storeForHelper}</p>
+        </div>
+
+        <div>
+          <label htmlFor="price-now" className={labelClass}>
+            {labels.inputs.priceNow}
+          </label>
+          <div className="relative">
+            <input
+              id="price-now"
+              type="number"
+              min={0}
+              step="any"
+              value={priceText}
+              onChange={(event) => onPriceChange(event.target.value)}
+              placeholder="0"
+              className={`${fieldClass} pr-20`}
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-slate-400">
+              {labels.inputs.perKg}
+            </span>
+          </div>
+          <p className={helperClass}>{labels.inputs.priceHelper}</p>
+          {isUsingNationalFallback && (
+            <p role="status" className="mt-2 rounded-lg border border-orange-300/20 bg-orange-300/5 p-2 text-xs leading-5 text-orange-100">
+              {labels.inputs.nationalFallback}
+            </p>
+          )}
+          {!hasHistory && (
+            <p role="status" className="mt-2 rounded-lg border border-orange-300/20 bg-orange-300/5 p-2 text-xs leading-5 text-orange-100">
+              {labels.inputs.priceMissing}
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-teal-300/25 bg-teal-300/[0.06] p-4">
+          <label htmlFor="quantity" className="text-sm font-semibold text-teal-100">
+            {labels.inputs.quantity}
+          </label>
+          <div className="mt-2 flex items-baseline gap-2">
+            <input
+              id="quantity"
+              type="number"
+              min={0}
+              step="any"
+              value={quantityText}
+              onChange={(event) => onQuantityChange(event.target.value)}
+              className="w-full min-w-0 bg-transparent font-serif text-4xl text-white outline-none placeholder:text-slate-600 focus:text-teal-100 sm:text-5xl"
+              aria-describedby="quantity-helper"
+            />
+            <span className="shrink-0 text-sm text-slate-400">
+              {labels.inputs.kg}
+            </span>
+          </div>
+          <p id="quantity-helper" className={helperClass}>
+            {labels.inputs.quantityHelper}
           </p>
         </div>
 
-        <fieldset className="rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
-          <legend className="px-1 text-xs font-bold uppercase tracking-wider text-amber-950">
-            Example assumptions
-          </legend>
-          <p className="mt-1 text-sm leading-6 text-amber-950">
-            {labels.inputs.exampleValue}
-          </p>
+        <NumberField
+          id="storage-cost"
+          label={`${labels.inputs.storageCost} (${labels.inputs.perKg}/${labels.inputs.monthsUnit.replace(/s$/, "")})`}
+          value={storageCostText}
+          onChange={onStorageCostChange}
+          suffix={labels.inputs.perKg}
+          helper={labels.inputs.costHelper}
+        />
 
-          <div className="mt-4">
-            <label className={labelClass} htmlFor="storage-cost">
-              {labels.inputs.storageCost}
-            </label>
-            <input
-              className={fieldClass}
-              id="storage-cost"
-              type="number"
-              min="0"
-              step="any"
-              inputMode="decimal"
-              value={storageCost}
-              onChange={(event) => onStorageCostChange(event.target.value)}
-            />
-          </div>
+        <NumberField
+          id="loss"
+          label={labels.inputs.loss}
+          value={lossText}
+          onChange={onLossChange}
+          suffix="%"
+          helper={labels.inputs.lossHelper}
+          step="0.1"
+        />
 
-          <div className="mt-4">
-            <label className={labelClass} htmlFor="expected-loss">
-              {labels.inputs.expectedLoss}
+        <div className="rounded-2xl border border-white/5 bg-[#0c1526] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <label htmlFor="interest" className={labelClass}>
+              {labels.inputs.loanInterest}
             </label>
-            <input
-              className={fieldClass}
-              id="expected-loss"
-              type="number"
-              min="0"
-              max="100"
-              step="any"
-              inputMode="decimal"
-              value={lossPct}
-              onChange={(event) => onLossPctChange(event.target.value)}
-            />
+            <span className="text-sm font-semibold text-orange-200">
+              {interestText}%
+            </span>
           </div>
-        </fieldset>
+          <input
+            id="interest"
+            type="range"
+            min={0}
+            max={36}
+            step={1}
+            value={interestText === "" ? 0 : Number(interestText)}
+            onChange={(event) => onInterestChange(event.target.value)}
+            className="mt-4 w-full cursor-pointer accent-orange-400"
+          />
+          <div className="mt-1 flex justify-between text-xs text-slate-500">
+            <span>0%</span><span>36%</span>
+          </div>
+          <p className={helperClass}>{labels.inputs.interestHelper}</p>
+        </div>
       </div>
-    </section>
+
+      <div className="mt-6 border-t border-white/10 pt-4">
+        <button
+          type="button"
+          onClick={() => onMoreOptionsChange(!moreOptions)}
+          aria-expanded={moreOptions}
+          className="flex w-full items-center justify-between rounded-xl py-2 text-left text-sm font-semibold text-teal-200 transition hover:text-teal-100"
+        >
+          <span>{moreOptions ? labels.inputs.lessOptions : labels.inputs.moreOptions}</span>
+          <span aria-hidden="true">{moreOptions ? "−" : "+"}</span>
+        </button>
+        {moreOptions && (
+          <div className="mt-3 max-w-md">
+            <NumberField
+              id="cash-needed"
+              label={labels.inputs.cashNeeded}
+              value={cashText}
+              onChange={onCashChange}
+              suffix={labels.thousands}
+              helper={labels.inputs.cashHelper}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

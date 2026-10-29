@@ -29,6 +29,8 @@ function confidenceText(confidence: Confidence): string {
       return labels.data.mediumConfidence;
     case "high":
       return labels.data.highConfidence;
+    default:
+      return labels.reliability.noConfidence;
   }
 }
 

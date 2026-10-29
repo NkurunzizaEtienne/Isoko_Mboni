@@ -1,4 +1,4 @@
-import type { DecisionInput, DecisionResult, HorizonResult } from "../types";
+import type { DecisionInput, DecisionResult, HorizonResult, ShownOption } from "../types";
 
 const THETA_DEFAULT = 0.6;
 const TAU_DEFAULT = 0.1;
@@ -71,6 +71,30 @@ export function decide(input: DecisionInput): DecisionResult {
   const storing = best !== null && kgStore > 0;
   const h = best ? best.months : 0;
 
+  // Figures for the option we show: the best one, or the closest one when selling.
+  // These are always calculated, so the tiles never show a stuck 0.
+  const option = best ?? closest;
+  const kgShown = kgStore > 0 ? kgStore : Q;
+  const shown: ShownOption = option
+    ? {
+        option,
+        kg: kgShown,
+        totalGain: option.gainPerKg * kgShown,
+        totalGainLow: option.gainLowPerKg * kgShown,
+        kgLost: kgShown * option.lossShare,
+        storageCostTotal: C * option.months * kgShown,
+        interestCostTotal: P0 * r * option.months * kgShown,
+      }
+    : {
+        option: null,
+        kg: kgShown,
+        totalGain: 0,
+        totalGainLow: 0,
+        kgLost: 0,
+        storageCostTotal: 0,
+        interestCostTotal: 0,
+      };
+
   return {
     verdict: storing ? "store" : "sell",
     best: storing ? best : null,
@@ -83,5 +107,6 @@ export function decide(input: DecisionInput): DecisionResult {
     kgLost: storing && best ? kgStore * best.lossShare : 0,
     storageCostTotal: storing ? C * h * kgStore : 0,
     interestCostTotal: storing ? P0 * r * h * kgStore : 0,
+    shown,
   };
 }

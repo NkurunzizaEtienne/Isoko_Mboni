@@ -1,233 +1,143 @@
 
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ReferenceDot,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { labels } from "../labels";
-import type { HistoryPoint, OutlookItem } from "../types";
+import type { SeasonalFile } from "../types";
 
-type ChartPoint = {
-  month: string;
-  historical?: number;
-  expected?: number;
-  low?: number;
-  high?: number;
-};
-
-type PriceChartProps = {
-  cropName: string;
-  points: HistoryPoint[];
-  outlook?: OutlookItem;
-  priceNow?: number;
-  months: number;
-  hasHistory: boolean;
-  marketLabel: string;
-};
-
-function formatRwf(value: number): string {
-  return new Intl.NumberFormat("en-RW", {
-    maximumFractionDigits: 1,
-  }).format(value);
+interface Props {
+  seasonal: SeasonalFile;
+  cropId: string;
+  harvestMonth: number;
+  bestMonth?: number;
 }
 
-function displayMonth(month: string): string {
-  const match = /^(\d{4})-(\d{2})$/.exec(month);
-  if (!match) return month;
-
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, 1);
-  return date.toLocaleDateString("en", {
-    month: "short",
-    year: "2-digit",
-  });
+function formatPrice(value: number): string {
+  return Math.round(value).toLocaleString("en-US");
 }
 
-export function PriceChart({
-  cropName,
-  points,
-  outlook,
-  priceNow,
-  months,
-  hasHistory,
-  marketLabel,
-}: PriceChartProps) {
-  const orderedPoints = [...points].sort((a, b) =>
-    a.month.localeCompare(b.month),
-  );
+export default function PriceChart({
+  seasonal,
+  cropId,
+  harvestMonth,
+  bestMonth,
+}: Props) {
+  const rows = seasonal.items
+    .filter((item) => item.crop_id === cropId)
+    .filter((item) => Number.isFinite(item.avg_price))
+    .sort((a, b) => a.cal_month - b.cal_month)
+    .map((item) => ({
+      monthNumber: item.cal_month,
+      month: labels.shortMonths[item.cal_month - 1] ?? "",
+      price: item.avg_price,
+    }));
 
-  const chartData: ChartPoint[] = orderedPoints.map((point) => ({
-    month: point.month,
-    historical: point.price,
-  }));
+  const average = rows.length > 0
+    ? rows.reduce((sum, row) => sum + row.price, 0) / rows.length
+    : undefined;
 
-  let outlookMonth: string | undefined;
-  let expectedPrice: number | undefined;
-
-  if (outlook && priceNow !== undefined && Number.isFinite(priceNow)) {
-    const lastMonth = orderedPoints[orderedPoints.length - 1]?.month;
-    const match = lastMonth ? /^(\d{4})-(\d{2})$/.exec(lastMonth) : null;
-
-    if (match) {
-      const futureDate = new Date(
-        Number(match[1]),
-        Number(match[2]) - 1 + months,
-        1,
-      );
-
-      outlookMonth = `${futureDate.getFullYear()}-${String(
-        futureDate.getMonth() + 1,
-      ).padStart(2, "0")}`;
-
-      expectedPrice = priceNow * (1 + outlook.expected_change_pct / 100);
-
-      chartData.push({
-        month: outlookMonth,
-        expected: expectedPrice,
-        low: priceNow * (1 + outlook.low_change_pct / 100),
-        high: priceNow * (1 + outlook.high_change_pct / 100),
-      });
-    }
-  }
+  const harvestRow = rows.find((row) => row.monthNumber === harvestMonth);
+  const bestRow = bestMonth
+    ? rows.find((row) => row.monthNumber === bestMonth)
+    : undefined;
 
   return (
-    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
-            Market history
-          </p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
-            {labels.chart.title}
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            {cropName} · {marketLabel}
-          </p>
-        </div>
-        <p className="text-xs leading-5 text-slate-500">Prices in RWF/kg</p>
+    <section className="rounded-3xl border border-white/10 bg-[#111b2c] p-4 sm:p-7">
+      <div className="mb-5">
+        <h2 className="font-serif text-2xl text-white sm:text-3xl">
+          {labels.chart.heading}
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
+          {labels.chart.subtitle}
+        </p>
       </div>
 
-      {!hasHistory ? (
-        <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center sm:p-8">
-          <p className="font-semibold text-slate-800">
-            {labels.chart.noHistory}
-          </p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            You can enter a current price manually, but the historical chart
-            remains unavailable until price history exists.
-          </p>
-        </div>
+      {rows.length === 0 ? (
+        <p className="rounded-2xl border border-white/10 bg-[#0b1425] p-5 text-sm leading-6 text-slate-300">
+          {labels.chart.noSeasonalData}
+        </p>
       ) : (
         <>
-          <div className="mt-5 h-72 w-full sm:h-96">
+          <div className="h-72 w-full sm:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={chartData}
-                margin={{ top: 12, right: 10, left: 0, bottom: 8 }}
+                data={rows}
+                margin={{ top: 18, right: 14, left: 4, bottom: 6 }}
               >
-                <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" />
+                <CartesianGrid
+                  stroke="#273449"
+                  strokeDasharray="3 5"
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="month"
-                  tickFormatter={displayMonth}
-                  minTickGap={28}
-                  tick={{ fill: "#64748b", fontSize: 12 }}
-                  axisLine={{ stroke: "#cbd5e1" }}
+                  tick={{ fill: "#94a3b8", fontSize: 12 }}
+                  axisLine={{ stroke: "#334155" }}
                   tickLine={false}
                 />
                 <YAxis
-                  width={68}
-                  tickFormatter={(value: number) => formatRwf(value)}
-                  tick={{ fill: "#64748b", fontSize: 12 }}
+                  width={66}
+                  tickFormatter={formatPrice}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <Tooltip
-                  labelFormatter={(value) => displayMonth(String(value))}
-                  formatter={(value, name) => [
-                    value == null ? "—" : `${formatRwf(Number(value))} RWF/kg`,
-                    name === "historical"
-                      ? labels.chart.history
-                      : name === "expected"
-                        ? labels.chart.expected
-                        : name === "low"
-                          ? "Lower outlook bound"
-                          : name === "high"
-                            ? "Upper outlook bound"
-                            : String(name),
-                  ]}
                   contentStyle={{
+                    backgroundColor: "#0b1425",
+                    border: "1px solid #334155",
                     borderRadius: 12,
-                    borderColor: "#e2e8f0",
-                    fontSize: 12,
+                    color: "#f8fafc",
                   }}
+                  labelStyle={{ color: "#cbd5e1", marginBottom: 6 }}
+                  formatter={(value) => [
+                    `${formatPrice(Number(value))} ${labels.thousands}/kg`,
+                    labels.chart.heading,
+                  ]}
                 />
-                <Legend
-                  formatter={(value) =>
-                    value === "historical"
-                      ? labels.chart.history
-                      : value === "expected"
-                        ? labels.chart.expected
-                        : value === "low"
-                          ? "Lower outlook bound"
-                          : value === "high"
-                            ? "Upper outlook bound"
-                            : value
-                  }
-                />
-
+                {average !== undefined && (
+                  <ReferenceLine
+                    y={average}
+                    stroke="#94a3b8"
+                    strokeDasharray="6 5"
+                    strokeWidth={1.5}
+                  />
+                )}
                 <Line
                   type="monotone"
-                  dataKey="historical"
-                  name="historical"
-                  stroke="#047857"
-                  strokeWidth={2.5}
-                  dot={false}
-                  connectNulls={false}
-                  activeDot={{ r: 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="low"
-                  name="low"
-                  stroke="#d97706"
-                  strokeDasharray="5 5"
-                  strokeWidth={1.5}
-                  dot={false}
+                  dataKey="price"
+                  name={labels.chart.heading}
+                  stroke="#42d6c4"
+                  strokeWidth={3}
+                  dot={{ r: 3, fill: "#42d6c4", strokeWidth: 0 }}
+                  activeDot={{ r: 5, fill: "#42d6c4", stroke: "#0b1425", strokeWidth: 2 }}
                   connectNulls={false}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="high"
-                  name="high"
-                  stroke="#d97706"
-                  strokeDasharray="5 5"
-                  strokeWidth={1.5}
-                  dot={false}
-                  connectNulls={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="expected"
-                  name="expected"
-                  stroke="#2563eb"
-                  strokeWidth={2}
-                  strokeDasharray="4 4"
-                  dot={{ r: 5, fill: "#2563eb" }}
-                  connectNulls={false}
-                />
-
-                {outlookMonth && expectedPrice !== undefined && (
+                {harvestRow && (
                   <ReferenceDot
-                    x={outlookMonth}
-                    y={expectedPrice}
-                    r={5}
-                    fill="#2563eb"
-                    stroke="#ffffff"
+                    x={harvestRow.month}
+                    y={harvestRow.price}
+                    r={6}
+                    fill="#ff817a"
+                    stroke="#0b1425"
+                    strokeWidth={2}
+                  />
+                )}
+                {bestRow && bestMonth !== harvestMonth && (
+                  <ReferenceDot
+                    x={bestRow.month}
+                    y={bestRow.price}
+                    r={6}
+                    fill="#42d6c4"
+                    stroke="#0b1425"
                     strokeWidth={2}
                   />
                 )}
@@ -235,12 +145,26 @@ export function PriceChart({
             </ResponsiveContainer>
           </div>
 
-          <p className="mt-3 text-xs leading-5 text-slate-500">
-            {labels.chart.note} The dotted outlook is plotted {months}{" "}
-            {months === 1 ? "month" : "months"} after the latest historical point
-            to illustrate the selected storage horizon. It is an estimate, not a
-            market-specific forecast.
-          </p>
+          <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3 border-t border-white/10 pt-4 text-xs text-slate-300">
+            <span className="flex items-center gap-2">
+              <span className="h-0.5 w-5 rounded bg-teal-300" />
+              {labels.chart.heading}
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="w-5 border-t-2 border-dashed border-slate-400" />
+              {labels.chart.average}
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ff817a]" />
+              {labels.chart.sellAtHarvest}
+            </span>
+            {bestRow && bestMonth !== harvestMonth && (
+              <span className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-teal-300" />
+                {labels.chart.sellAfterStoring}
+              </span>
+            )}
+          </div>
         </>
       )}
     </section>
