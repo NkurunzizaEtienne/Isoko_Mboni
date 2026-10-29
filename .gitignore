@@ -33,3 +33,11 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+
+pipeline/data/
+pipeline/out/
+node_modules/
+__pycache__/
+ *.pkl
+ *.jsonl

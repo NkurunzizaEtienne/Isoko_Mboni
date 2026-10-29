@@ -1,63 +1,82 @@
 
-import type { Crop } from "../mockData";
-import type { UserInputs } from "../App";
+import type { Crop } from "../types";
 import { labels } from "../labels";
 
-type Props = {
-  crops: Crop[];
-  inputs: UserInputs;
-  onChange: (inputs: UserInputs) => void;
-  onCompare: () => void;
+type MarketOption = {
+  value: string;
+  label: string;
 };
 
-export default function InputsPanel({
+type InputsPanelProps = {
+  crops: Crop[];
+  cropId: string;
+  marketChoice: string;
+  marketOptions: MarketOption[];
+  harvestMonth: number;
+  months: string[];
+  storageMonths: number;
+  priceNow: string;
+  storageCost: string;
+  lossPct: string;
+  hasUsableHistory: boolean;
+  isUsingNationalFallback: boolean;
+  onCropChange: (value: string) => void;
+  onMarketChange: (value: string) => void;
+  onHarvestMonthChange: (value: number) => void;
+  onStorageMonthsChange: (value: number) => void;
+  onPriceNowChange: (value: string) => void;
+  onStorageCostChange: (value: string) => void;
+  onLossPctChange: (value: string) => void;
+};
+
+const fieldClass =
+  "mt-2 block min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-base text-slate-950 outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20";
+
+const labelClass = "block text-sm font-semibold text-slate-800";
+
+export function InputsPanel({
   crops,
-  inputs,
-  onChange,
-  onCompare,
-}: Props) {
-  const selectedCrop = crops.find((crop) => crop.id === inputs.cropId);
-  const markets = selectedCrop?.markets ?? ["national"];
-
-  function update<K extends keyof UserInputs>(
-    key: K,
-    value: UserInputs[K],
-  ) {
-    onChange({ ...inputs, [key]: value });
-  }
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (
-      !Number.isFinite(inputs.storageCost) ||
-      inputs.storageCost < 0 ||
-      !Number.isFinite(inputs.lossPct) ||
-      inputs.lossPct < 0 ||
-      inputs.lossPct > 100
-    ) {
-      return;
-    }
-
-    onCompare();
-  }
-
+  cropId,
+  marketChoice,
+  marketOptions,
+  harvestMonth,
+  months,
+  storageMonths,
+  priceNow,
+  storageCost,
+  lossPct,
+  hasUsableHistory,
+  isUsingNationalFallback,
+  onCropChange,
+  onMarketChange,
+  onHarvestMonthChange,
+  onStorageMonthsChange,
+  onPriceNowChange,
+  onStorageCostChange,
+  onLossPctChange,
+}: InputsPanelProps) {
   return (
-    <section className="input-card">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">STEP 01</p>
-          <h2>{labels.inputsTitle}</h2>
-        </div>
-        <span className="step-count">01 / 02</span>
-      </div>
+    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
+        Decision inputs
+      </p>
+      <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+        {labels.inputs.title}
+      </h2>
+      <p className="mt-2 text-sm leading-6 text-slate-600">
+        {labels.inputs.description}
+      </p>
 
-      <form onSubmit={handleSubmit}>
-        <label className="field">
-          <span>{labels.crop}</span>
+      <div className="mt-6 space-y-5">
+        <div>
+          <label className={labelClass} htmlFor="crop">
+            {labels.inputs.crop}
+          </label>
           <select
-            value={inputs.cropId}
-            onChange={(event) => update("cropId", event.target.value)}
+            className={fieldClass}
+            id="crop"
+            value={cropId}
+            onChange={(event) => onCropChange(event.target.value)}
           >
             {crops.map((crop) => (
               <option key={crop.id} value={crop.id}>
@@ -65,108 +84,147 @@ export default function InputsPanel({
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="field">
-          <span>{labels.market}</span>
+        <div>
+          <label className={labelClass} htmlFor="market">
+            {labels.inputs.market}
+          </label>
           <select
-            value={inputs.market}
-            onChange={(event) => update("market", event.target.value)}
+            className={fieldClass}
+            id="market"
+            value={marketChoice}
+            onChange={(event) => onMarketChange(event.target.value)}
           >
-            {markets.map((market) => (
-              <option key={market} value={market}>
-                {market === "national" ? labels.national : market}
+            {marketOptions.map((market) => (
+              <option key={market.value} value={market.value}>
+                {market.label}
               </option>
             ))}
           </select>
-        </label>
 
-        <label className="field">
-          <span>{labels.harvestMonth}</span>
+          {isUsingNationalFallback && (
+            <p
+              role="status"
+              className="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950"
+            >
+              {labels.inputs.nationalFallback}
+            </p>
+          )}
+
+          {!hasUsableHistory && (
+            <p
+              role="status"
+              className="mt-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-950"
+            >
+              {labels.inputs.noHistory}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="harvest-month">
+            {labels.inputs.harvestMonth}
+          </label>
           <select
-            value={inputs.harvestMonth}
+            className={fieldClass}
+            id="harvest-month"
+            value={harvestMonth}
             onChange={(event) =>
-              update("harvestMonth", Number(event.target.value))
+              onHarvestMonthChange(Number(event.target.value))
             }
           >
-            {labels.monthsShort.map((month, index) => (
+            {months.map((month, index) => (
               <option key={month} value={index + 1}>
                 {month}
               </option>
             ))}
           </select>
-        </label>
-
-        <div className="field">
-          <div className="field-label-row">
-            <label htmlFor="storage-months">{labels.storageMonths}</label>
-            <output className="range-value">
-              {inputs.storageMonths} {labels.months}
-            </output>
-          </div>
-          <input
-            id="storage-months"
-            type="range"
-            min="1"
-            max="6"
-            step="1"
-            value={inputs.storageMonths}
-            onChange={(event) =>
-              update("storageMonths", Number(event.target.value))
-            }
-          />
-          <div className="range-labels">
-            <span>1 month</span>
-            <span>6 months</span>
-          </div>
         </div>
 
-        <label className="field">
-          <span>{labels.storageCost}</span>
-          <div className="input-with-unit">
+        <div>
+          <label className={labelClass} htmlFor="storage-months">
+            {labels.inputs.storageMonths}
+          </label>
+          <select
+            className={fieldClass}
+            id="storage-months"
+            value={storageMonths}
+            onChange={(event) =>
+              onStorageMonthsChange(Number(event.target.value))
+            }
+          >
+            {[1, 2, 3, 4, 5, 6].map((monthCount) => (
+              <option key={monthCount} value={monthCount}>
+                {monthCount} {monthCount === 1 ? "month" : "months"}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass} htmlFor="current-price">
+            {labels.inputs.currentPrice}
+          </label>
+          <input
+            className={fieldClass}
+            id="current-price"
+            type="number"
+            min="0.01"
+            step="any"
+            inputMode="decimal"
+            value={priceNow}
+            onChange={(event) => onPriceNowChange(event.target.value)}
+            placeholder="Enter current price"
+          />
+          <p className="mt-1.5 text-xs leading-5 text-slate-500">
+            Prefilled from the latest available price point. Edit it to match
+            the price offered to you.
+          </p>
+        </div>
+
+        <fieldset className="rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
+          <legend className="px-1 text-xs font-bold uppercase tracking-wider text-amber-950">
+            Example assumptions
+          </legend>
+          <p className="mt-1 text-sm leading-6 text-amber-950">
+            {labels.inputs.exampleValue}
+          </p>
+
+          <div className="mt-4">
+            <label className={labelClass} htmlFor="storage-cost">
+              {labels.inputs.storageCost}
+            </label>
             <input
+              className={fieldClass}
+              id="storage-cost"
               type="number"
               min="0"
-              step="0.5"
-              required
-              value={inputs.storageCost}
-              onChange={(event) =>
-                update("storageCost", Number(event.target.value))
-              }
+              step="any"
+              inputMode="decimal"
+              value={storageCost}
+              onChange={(event) => onStorageCostChange(event.target.value)}
             />
-            <span>{labels.currency}/kg/mo</span>
           </div>
-          <small>{labels.storageCostHelp}</small>
-        </label>
 
-        <label className="field">
-          <span>{labels.expectedLoss}</span>
-          <div className="input-with-unit">
+          <div className="mt-4">
+            <label className={labelClass} htmlFor="expected-loss">
+              {labels.inputs.expectedLoss}
+            </label>
             <input
+              className={fieldClass}
+              id="expected-loss"
               type="number"
               min="0"
               max="100"
-              step="0.1"
-              required
-              value={inputs.lossPct}
-              onChange={(event) =>
-                update("lossPct", Number(event.target.value))
-              }
+              step="any"
+              inputMode="decimal"
+              value={lossPct}
+              onChange={(event) => onLossPctChange(event.target.value)}
             />
-            <span>%</span>
           </div>
-          <small>{labels.expectedLossHelp}</small>
-        </label>
-
-        <button className="primary-button" type="submit">
-          {labels.calculate}
-          <span aria-hidden="true">→</span>
-        </button>
-
-        <p className="form-footnote">
-          Change the assumptions to reflect your own storage situation.
-        </p>
-      </form>
+        </fieldset>
+      </div>
     </section>
   );
 }

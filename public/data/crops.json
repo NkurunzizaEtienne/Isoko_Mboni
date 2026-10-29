@@ -1,0 +1,63 @@
+{
+    "generated_at": "2026-10-29",
+     "data_range": {
+        "start": "2024-10",
+        "end": "2026-10"
+        },
+        "crops": [
+            {
+                "id": "maize",
+                "name": "Maize", "unit": "kg",
+                "markets": [
+                        "Kimironko",
+                        "base",
+                        "birambo",
+                        "bugarama",
+                        "butare",
+                        "byumba",
+                        "congonil",
+                        "gahanga",
+                        "gahoromani",
+                        "gakenke",
+                        "gasarenda",
+                        "gatore",
+                        "karambi",
+                        "karenge",
+                        "kibungo",
+                        "kibuye",
+                        "kicukiro-center",
+                        "mahoko", "matimba",
+                        "mubyangabo",
+                        "muhondo",
+                        "mukamira",
+                        "mulindi",
+                        "musanze",
+                        "nkora",
+                        "nyabugogo",
+                        "nyagahinga",
+                        "nyagatare",
+                        "nyakarambi",
+                        "nyamata",
+                        "ruhuha",
+                        "rukomo",
+                        "rushashi",
+                        "rwamagana",
+                        "ziniya"
+                        ],
+                            "latest_price": 500.0,
+                            "latest_month": "2026-10"
+                            },
+                            {
+                                "id": "irish-potato",
+                                "name": "Irish- Potato- Kirundo",
+                                "unit": "kg", "markets": [
+                                    "Kimironko",
+                                    "Ngororero",
+                                    "buhanda",
+                                    "bushenge",
+                                    "byumba",
+                                    "congonil",
+                                    "gahanga",
+                                    "gahoromani",
+                                    "gakenke",
+                                    "gisenyi", "kamembe", "karenge", "kibungo", "kibuye", "kicukiro-center", "mahoko", "mubyangabo", "muhondo", "mukamira", "mulindi", "musanze", "ndago", "nkora", "nyabugogo", "nyagatare", "nyamata", "nyanza", "ruhuha", "rushashi"], "latest_price": 750.0, "latest_month": "2026-10"}, {"id": "beans", "name": "Bean Shyushya", "unit": "kg", "markets": ["Kimironko", "birambo", "bushenge", "congonil", "gahanga", "gahoromani", "gasarenda", "gatore", "gisenyi", "kamembe", "karambi", "karenge", "kayenzi", "kibirizi", "kibungo", "kibuye", "kicukiro-center", "kimisagara", "mahoko", "matimba", "mubyangabo", "muhondo", "mukamira", "mulindi", "nkora", "nyabugogo", "nyagatare", "nyakarambi", "nyamata", "nyanza", "ruhango", "ruhuha", "rukomo", "rushashi", "rwamagana", "ziniya"], "latest_price": 1400.0, "latest_month": "2026-10"}, {"id": "rice", "name": "Rice -Rw - Kigori", "unit": "kg", "markets": ["Kimironko", "Ngororero", "birambo", "buhanda", "butare", "gahanga", "gahoromani", "gasarenda", "kamembe", "karambi", "karenge", "kibirizi", "kibungo", "kicukiro-center", "matimba", "mubyangabo", "muhondo", "mukamira", "ndago", "nyabugogo", "nyagatare", "nyakarambi", "ruhuha", "rukomo", "rushashi", "rwamagana"], "latest_price": 1080.0, "latest_month": "2026-10"}]}

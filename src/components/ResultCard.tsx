@@ -1,117 +1,157 @@
 
-import type { DecisionView } from "../App";
 import { labels } from "../labels";
+import type { DecisionResult, OutlookItem } from "../types";
 
-type Props = {
-  decision: DecisionView;
+type ResultCardProps = {
+  decision?: DecisionResult;
+  outlook?: OutlookItem;
   cropName: string;
-  storageCost: number;
-  lossPct: number;
+  months: number;
+  missingOutlook: boolean;
+  invalidInputs: boolean;
 };
 
 function formatRwf(value: number): string {
-  return `${value < 0 ? "−" : ""}${Math.abs(value).toLocaleString(
-    "en-RW",
-    { maximumFractionDigits: 1 },
-  )}`;
+  return new Intl.NumberFormat("en-RW", {
+    maximumFractionDigits: 1,
+  }).format(value);
 }
 
-export default function ResultCard({
+export function ResultCard({
   decision,
+  outlook,
   cropName,
-  storageCost,
-  lossPct,
-}: Props) {
-  if (!decision.enoughData || decision.netPerKg === null) {
+  months,
+  missingOutlook,
+  invalidInputs,
+}: ResultCardProps) {
+  const cardClass =
+    "rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7";
+
+  if (missingOutlook || !outlook) {
     return (
-      <section className="result-card result-insufficient">
-        <p className="eyebrow">STEP 02 · RESULT</p>
-        <h2>{labels.notEnough}</h2>
-        <p>{labels.noOutlook}</p>
-        <p className="muted">
-          Try another crop, market or storage period if data is available.
+      <section className={cardClass}>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
+          Decision result
+        </p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+          {labels.results.title}
+        </h2>
+        <div className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 p-4 sm:p-5">
+          <p className="text-lg font-bold text-amber-950">
+            {labels.results.missingOutlook}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-amber-950">
+            {labels.results.missingOutlookDetail}
+          </p>
+        </div>
+        <p className="mt-4 text-sm text-slate-600">
+          {cropName} · {months} {months === 1 ? "month" : "months"} of storage
         </p>
       </section>
     );
   }
 
-  const isStore = decision.verdict === "store";
-  const isPositive = decision.netPerKg > 0;
-
-  return (
-    <section className={`result-card ${isStore ? "result-store" : "result-sell"}`}>
-      <div className="result-topline">
-        <p className="eyebrow">{labels.resultTitle}</p>
-        <span className={`verdict-pill ${isStore ? "positive" : "caution"}`}>
-          {isStore ? labels.store : labels.sellNow}
-        </span>
-      </div>
-
-      <h2>
-        {isStore
-          ? `Consider storing ${decision.months} months`
-          : "Selling now may be better"}
-      </h2>
-
-      <p className="result-description">
-        {isStore
-          ? `The estimate favors storage for ${cropName.toLowerCase()}, under your assumptions.`
-          : `The estimated return from storage does not exceed the current reference price after the costs you entered.`}
-      </p>
-
-      <div className="net-value">
-        <span>{labels.estimatedNet}</span>
-        <strong className={isPositive ? "positive-text" : "negative-text"}>
-          {isPositive ? "+" : ""}
-          {formatRwf(decision.netPerKg)}
-          <small> RWF/kg</small>
-        </strong>
-      </div>
-
-      <div className="result-metrics">
-        <div>
-          <span>{labels.currentPrice}</span>
-          <strong>
-            {decision.currentPrice === null
-              ? "—"
-              : `${formatRwf(decision.currentPrice)} RWF/kg`}
-          </strong>
-        </div>
-        <div>
-          <span>Estimated price after storage</span>
-          <strong>
-            {decision.expectedPrice === null
-              ? "—"
-              : `${formatRwf(decision.expectedPrice)} RWF/kg`}
-          </strong>
-        </div>
-        <div>
-          <span>Storage cost entered</span>
-          <strong>{formatRwf(storageCost)} RWF/kg/mo</strong>
-        </div>
-        <div>
-          <span>Expected quantity loss</span>
-          <strong>{lossPct}%</strong>
-        </div>
-      </div>
-
-      {decision.lowPrice !== null && decision.highPrice !== null && (
-        <div className="price-range">
-          <span>Estimated future price range</span>
-          <strong>
-            {formatRwf(decision.lowPrice)}–{formatRwf(decision.highPrice)} RWF/kg
-          </strong>
-          <p>
-            This range represents uncertainty in the price estimate. It is
-            not a guarantee of the price you will receive.
+  if (invalidInputs || !decision) {
+    return (
+      <section className={cardClass}>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
+          Decision result
+        </p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+          {labels.results.title}
+        </h2>
+        <div className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 p-4 sm:p-5">
+          <p className="text-lg font-bold text-amber-950">
+            {labels.results.invalidInputs}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-amber-950">
+            {labels.results.invalidInputsDetail}
           </p>
         </div>
-      )}
+      </section>
+    );
+  }
 
-      <p className="result-disclaimer">
-        This is a decision aid, not a promise of profit. Verify local prices
-        and actual storage costs before acting.
+  const verdictContent = {
+    store: {
+      title: "Store it",
+      detail: `Expected gain about ${formatRwf(decision.netExpected)} RWF/kg`,
+      style: "border-emerald-300 bg-emerald-50 text-emerald-950",
+      marker: "STORE",
+    },
+    sell: {
+      title: "Sell now",
+      detail: "Storing is unlikely to pay",
+      style: "border-red-300 bg-red-50 text-red-950",
+      marker: "SELL",
+    },
+    uncertain: {
+      title: "Too close to call",
+      detail: "The estimate does not clearly favour storing or selling.",
+      style: "border-amber-300 bg-amber-50 text-amber-950",
+      marker: "UNCERTAIN",
+    },
+  }[decision.verdict];
+
+  return (
+    <section className={cardClass}>
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-800">
+        Decision result
       </p>
+      <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+        {labels.results.title}
+      </h2>
+
+      <div className={`mt-5 rounded-2xl border p-5 sm:p-6 ${verdictContent.style}`}>
+        <p className="text-xs font-extrabold tracking-[0.16em]">
+          {verdictContent.marker}
+        </p>
+        <h3 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
+          {verdictContent.title}
+        </h3>
+        <p className="mt-2 text-base font-semibold leading-6">
+          {verdictContent.detail}
+        </p>
+      </div>
+
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p className="text-sm font-medium text-slate-600">
+            {labels.results.expected}
+          </p>
+          <p className="mt-2 break-words text-2xl font-black tabular-nums text-slate-950">
+            {decision.netExpected > 0 ? "+" : ""}
+            {formatRwf(decision.netExpected)}
+          </p>
+          <p className="mt-1 text-xs text-slate-500">RWF/kg</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <p className="text-sm font-medium text-slate-600">
+            {labels.results.range}
+          </p>
+          <p className="mt-2 break-words text-xl font-bold tabular-nums text-slate-950">
+            {formatRwf(decision.netLow)} to {formatRwf(decision.netHigh)}
+          </p>
+          <p className="mt-1 text-xs text-slate-500">RWF/kg</p>
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-2 border-t border-slate-100 pt-4 text-sm leading-6 text-slate-600">
+        <p>
+          <span className="font-semibold text-slate-800">Crop:</span> {cropName}
+        </p>
+        <p>
+          <span className="font-semibold text-slate-800">Storage period:</span>{" "}
+          {months} {months === 1 ? "month" : "months"}
+        </p>
+        <p>
+          <span className="font-semibold text-slate-800">Outlook confidence:</span>{" "}
+          <span className="capitalize">{outlook.confidence}</span>
+        </p>
+        <p>{labels.results.nationalNotice}</p>
+      </div>
     </section>
   );
 }
