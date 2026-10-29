@@ -1,6 +1,6 @@
 
 export const labels = {
-  appName: "UmuhinziMboni",
+  appName: "IsokoMboni",
   nationalAverage: "National average",
   currency: "RWF",
   unit: "kg",
