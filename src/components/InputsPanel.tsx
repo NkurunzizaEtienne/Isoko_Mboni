@@ -227,7 +227,7 @@ export default function InputsPanel(props: Props) {
           )}
         </div>
 
-        <div className="rounded-2xl border border-teal-300/25 bg-teal-300/[0.06] p-4">
+        <div className="rounded-2xl border border-teal-300/25 bg-teal-300/6 p-4">
           <label htmlFor="quantity" className="text-sm font-semibold text-teal-100">
             {labels.inputs.quantity}
           </label>

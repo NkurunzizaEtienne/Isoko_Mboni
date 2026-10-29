@@ -33,7 +33,7 @@ function StatTile({
     <article className="min-w-0 rounded-2xl border border-white/10 bg-[#111b2c] p-4 sm:p-5">
       <p className="text-xs font-medium leading-5 text-slate-400">{title}</p>
       <p
-        className={`mt-3 break-words font-serif text-2xl leading-tight sm:text-3xl ${
+        className={`mt-3 wrap-break-word font-serif text-2xl leading-tight sm:text-3xl ${
           accent ? "text-teal-200" : "text-white"
         }`}
       >
