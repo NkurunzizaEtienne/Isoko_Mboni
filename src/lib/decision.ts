@@ -22,15 +22,18 @@ export function decide(input: DecisionInput): DecisionResult {
   const r = input.loanInterestPctYear / 100 / 12; // monthly interest
   const H = Math.max(1, input.maxMonths);
   const L = input.totalLossPct / 100 / H; // loss per month
+  const inflYear = input.inflationPctYear ?? 0;
 
   const all: HorizonResult[] = input.horizons
     .filter((f) => f.months >= 1 && f.months <= H)
     .sort((a, b) => a.months - b.months)
     .map((f) => {
       const h = f.months;
-      const p10 = Math.max(P0 * (1 + f.p10Pct / 100), 0.01);
-      const p50 = Math.max(P0 * (1 + f.p50Pct / 100), 0.01);
-      const p90 = Math.max(P0 * (1 + f.p90Pct / 100), p10 + 0.01);
+      // Seasonal change (inflation-adjusted in the data) plus the general price rise the user expects
+      const infl = Math.pow(1 + inflYear / 100, h / 12);
+      const p10 = Math.max(P0 * (1 + f.p10Pct / 100) * infl, 0.01);
+      const p50 = Math.max(P0 * (1 + f.p50Pct / 100) * infl, 0.01);
+      const p90 = Math.max(P0 * (1 + f.p90Pct / 100) * infl, p10 + 0.01);
 
       const lossFactor = Math.max(0, 1 - L * h);
       const vSell = P0 * (1 + r * h);                       // (1)
