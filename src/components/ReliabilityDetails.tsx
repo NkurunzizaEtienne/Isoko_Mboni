@@ -1,5 +1,6 @@
 
 import { labels } from "../labels";
+import FormulasUsed from "./FormulasUsed";
 import type { BacktestItem, HorizonResult, OutlookItem } from "../types";
 
 interface Props {
@@ -9,6 +10,11 @@ interface Props {
   hasDataGap: boolean;
   option: HorizonResult | null;
   month: string;
+  result: import("../types").DecisionResult | null;
+  priceNow: number;
+  storageCostPerMonth: number;
+  loanInterestPctYear: number;
+  inflationPctYear: number;
 }
 
 function formatNumber(value: number): string {
@@ -49,6 +55,11 @@ export default function ReliabilityDetails({
   hasDataGap,
   option,
   month,
+  result,
+  priceNow,
+  storageCostPerMonth,
+  loanInterestPctYear,
+  inflationPctYear,
 }: Props) {
   const confidenceLabel = outlook
     ? labels.reliability[outlook.confidence]
@@ -75,13 +86,8 @@ export default function ReliabilityDetails({
         </h2>
       </div>
 
-      <div className="mb-3">
-        <DetailBlock title={labels.reliability.dataSources}>
-          <ul className="list-disc space-y-1.5 pl-5 marker:text-teal-300">
-            <li>{labels.reliability.dataSourcePrices}</li>
-            <li>{labels.reliability.dataSourceInterest}</li>
-          </ul>
-        </DetailBlock>
+      <div className="mb-4">
+        <FormulasUsed result={result} priceNow={priceNow} storageCostPerMonth={storageCostPerMonth} loanInterestPctYear={loanInterestPctYear} inflationPctYear={inflationPctYear} month={month} />
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
@@ -123,6 +129,13 @@ export default function ReliabilityDetails({
           )}
         </DetailBlock>
 
+        <DetailBlock title={labels.reliability.dataSources}>
+          <ul className="list-disc space-y-2 pl-5 marker:text-teal-300">
+            <li>{labels.reliability.sourceEsoko}</li>
+            <li>{labels.reliability.sourceNisrCpi}</li>
+          </ul>
+        </DetailBlock>
+
         <DetailBlock title={labels.reliability.chance}>
           {option ? (
             <>
@@ -160,16 +173,6 @@ export default function ReliabilityDetails({
           </ul>
         </DetailBlock>
 
-        <DetailBlock title={labels.reliability.calculation}>
-          <ol className="list-decimal space-y-2 pl-5 marker:text-teal-300">
-            <li>{labels.reliability.calcSell}</li>
-            <li>{labels.reliability.calcStore}</li>
-            <li>{labels.reliability.calcGain}</li>
-            <li>{labels.reliability.calcBreakEven}</li>
-            <li>{labels.reliability.calcChance}</li>
-            <li>{labels.reliability.calcRule}</li>
-          </ol>
-        </DetailBlock>
       </div>
     </div>
   );

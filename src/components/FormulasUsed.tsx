@@ -6,6 +6,7 @@ interface Props {
   priceNow: number;
   storageCostPerMonth: number;
   loanInterestPctYear: number;
+  inflationPctYear: number;
   month: string;
 }
 
@@ -37,7 +38,7 @@ function FormulaGroup({ title, formula, explanation }: {
 }
 
 export default function FormulasUsed({
-  result, priceNow, storageCostPerMonth, loanInterestPctYear, month,
+  result, priceNow, storageCostPerMonth, loanInterestPctYear, inflationPctYear, month,
 }: Props) {
   const shown = result?.shown;
   const option: HorizonResult | null = shown?.option ?? null;
@@ -99,6 +100,7 @@ export default function FormulasUsed({
               </p>
             )}
             <div className="mt-4 space-y-2 font-mono text-xs leading-6 text-slate-200 sm:text-sm">
+              <p>{labels.formulas.inflationInputLabel} = {decimal(inflationPctYear, 1)}% / year</p>
               <p>{labels.formulas.sellNowLabel} = {whole(P0)} × (1 + {decimal(r)} × {h}) = {whole(sellNow)} RWF/kg</p>
               <p>{labels.formulas.storeLabel} = {whole(Ph)} × (1 − {decimal(lossShare)}) − {whole(C)} × {h} = {whole(store)} RWF/kg</p>
               <p>{labels.formulas.gainLabel} = {whole(store)} − {whole(sellNow)} = {whole(gain)} RWF/kg</p>

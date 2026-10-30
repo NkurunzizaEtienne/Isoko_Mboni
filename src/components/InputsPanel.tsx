@@ -14,6 +14,7 @@ interface Props {
   storageCostText: string;
   lossText: string;
   interestText: string;
+  inflationText: string;
   cashText: string;
   moreOptions: boolean;
   isUsingNationalFallback: boolean;
@@ -27,6 +28,7 @@ interface Props {
   onStorageCostChange: (value: string) => void;
   onLossChange: (value: string) => void;
   onInterestChange: (value: string) => void;
+  onInflationChange: (value: string) => void;
   onCashChange: (value: string) => void;
   onMoreOptionsChange: (value: boolean) => void;
 }
@@ -93,6 +95,7 @@ export default function InputsPanel(props: Props) {
     storageCostText,
     lossText,
     interestText,
+    inflationText,
     cashText,
     moreOptions,
     isUsingNationalFallback,
@@ -106,6 +109,7 @@ export default function InputsPanel(props: Props) {
     onStorageCostChange,
     onLossChange,
     onInterestChange,
+    onInflationChange,
     onCashChange,
     onMoreOptionsChange,
   } = props;
@@ -227,7 +231,7 @@ export default function InputsPanel(props: Props) {
           )}
         </div>
 
-        <div className="rounded-2xl border border-teal-300/25 bg-teal-300/6 p-4">
+        <div className="rounded-2xl border border-teal-300/25 bg-teal-300/[0.06] p-4">
           <label htmlFor="quantity" className="text-sm font-semibold text-teal-100">
             {labels.inputs.quantity}
           </label>
@@ -293,6 +297,31 @@ export default function InputsPanel(props: Props) {
             <span>0%</span><span>36%</span>
           </div>
           <p className={helperClass}>{labels.inputs.interestHelper}</p>
+        </div>
+
+        <div className="rounded-2xl border border-white/5 bg-[#0c1526] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <label htmlFor="inflation" className={labelClass}>
+              {labels.inputs.inflation}
+            </label>
+            <span className="text-sm font-semibold text-teal-200">
+              {inflationText}%
+            </span>
+          </div>
+          <input
+            id="inflation"
+            type="range"
+            min={0}
+            max={30}
+            step={1}
+            value={inflationText === "" ? 0 : Number(inflationText)}
+            onChange={(event) => onInflationChange(event.target.value)}
+            className="mt-4 w-full cursor-pointer accent-teal-400"
+          />
+          <div className="mt-1 flex justify-between text-xs text-slate-500">
+            <span>0%</span><span>30%</span>
+          </div>
+          <p className={helperClass}>{labels.inputs.inflationHelper}</p>
         </div>
       </div>
 

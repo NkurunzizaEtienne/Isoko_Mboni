@@ -58,6 +58,9 @@ export default function PriceChart({
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
           {labels.chart.subtitle}
         </p>
+        <p className="mt-2 text-xs leading-5 text-slate-500">
+          {labels.chart.inflationNote}
+        </p>
       </div>
 
       {rows.length === 0 ? (
