@@ -15,7 +15,7 @@ export const TEAM: { name: string; role: string; bio: string }[] = [
   },
   {
     name: "MUNYAZIKWIYE Claude",
-    role: "Co-worker · Project team",
+    role: "Co-founder · Project team",
     bio: "Contributes to the development of Isoko Mboni and its mission to support better harvest decisions.",
   }
   
