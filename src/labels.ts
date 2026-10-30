@@ -1,5 +1,5 @@
 
-export const SELL_NOW_RW = "";
+export const SELL_NOW_RW = "Gurisha nonaha";
 
 export const labels = {
   appName: "Isoko Mboni",
@@ -61,7 +61,9 @@ export const labels = {
     loss: "Expected total loss over storage",
     lossHelper: "Example, change to your own",
     loanInterest: "Loan interest",
-    interestHelper: "Example: the average bank lending rate in Rwanda was about 16% in 2026 (National Bank of Rwanda). Change it to your own rate.",
+    interestHelper: "Annual interest rate (%)",
+    inflation: "Expected general price rise (% per year)",
+    inflationHelper: "Overall consumer prices rose about 20% in the year to September 2026 (NISR). Leave at 0 for a cautious estimate.",
     moreOptions: "More options",
     lessOptions: "Hide extra options",
     cashNeeded: "Cash you need now",
@@ -86,6 +88,7 @@ export const labels = {
       "Selling now looks safer. Storing is unlikely to pay after losses, storage and interest.",
     closest: "Closest option: store until {month}.",
     detailsLink: "How reliable is this? See details below",
+    formulasLink: "How is this calculated?",
     noReliablePattern:
       "No reliable seasonal price pattern found for this crop in our data. See details below.",
     missing: "Not enough data for this crop and harvest month.",
@@ -115,6 +118,55 @@ export const labels = {
     interest: "Interest",
     closestOption: "Closest storing option: until {month}",
   },
+  translations: {
+    sellNow: "Gurisha nonaha",
+    store: "Bika",
+    breakEven: "Igiciro cyo kutahomba",
+    chance: "Amahirwe yo kunguka",
+    decisionRule: "Itegeko ryo gufata icyemezo",
+    yourNumbers: "Imibare yawe",
+  },
+
+  formulas: {
+    heading: "Formulas used: is storing worth it?",
+    subtitle: "Ibisobanuro by'uko tubara niba kubika byunguka.",
+    symbolsHeading: "Symbols / Ibimenyetso",
+    symbols: [
+      ["inflation", "expected general price rise per year (your input, default 0)"],
+      ["h", "number of months stored"],
+      ["P0", "price now, at harvest (RWF/kg)"],
+      ["Ph", "expected price after h months (RWF/kg)"],
+      ["C", "storage and handling cost (RWF/kg/month)"],
+      ["L", 'loss per month = total expected loss ÷ the "Store for" months'],
+      ["r", "interest per month = loan interest per year ÷ 12"],
+      ["Q", "quantity (kg)"],
+    ],
+    groups: [
+      { title: "0. Expected price after h months", formula: "Ph = P0 × (1 + seasonal change) × (1 + inflation)^(h ÷ 12)", explanation: "In words: today's price, moved by the usual seasonal change for these months, and by the general price rise you expect." },
+      { title: "1. Value of selling now (Gurisha nonaha)", formula: "Sell now (per kg) = P0 × (1 + r × h)", explanation: "In words: the money from selling today, plus the interest you save or earn by having it today instead of in h months." },
+      { title: "2. Value of storing (Agaciro ko kubika)", formula: "Store (per kg) = Ph × (1 − L × h) − C × h", explanation: "In words: the expected future price, after the grain that spoils, minus what storage costs." },
+      { title: "3. Extra money from storing (net profit from storing)", formula: "Gain (per kg) = Store − Sell now", explanation: "In words: positive means storing is better than selling now." },
+      { title: "4. Break-even price (Igiciro cyo kutahomba)", formula: "Break-even = [ P0 × (1 + r × h) + C × h ] ÷ (1 − L × h)", explanation: "In words: the price you need after h months just to cover spoilage, storage and interest." },
+      { title: "5. Spread of possible prices", formula: "σ = ln( Phigh ÷ Plow ) ÷ 2.563", explanation: "In words: how wide the range of possible future prices is. Phigh and Plow are the high and low ends of our approximate price range (see Limits)." },
+      { title: "6. Chance that storing pays (Amahirwe yo kunguka ubika)", formula: "Chance = 1 − Φ( [ ln(Break-even) − ln(Ph) ] ÷ σ )", explanation: "In words: the chance that the future price ends above the break-even price. Φ is the standard normal distribution." },
+      { title: "7. If prices disappoint", formula: "Gain at low price = Store value calculated with Plow instead of Ph, minus Sell now", explanation: "In words: what happens if the price ends at the low end of the range." },
+      { title: "8. Decision rule (Itegeko ryo gufata icyemezo)", formula: "Storing for h months is a candidate only if ALL three are true:\n• Gain is above 0\n• Chance storing pays ≥ 60%\n• Gain at low price ≥ −10% of \"Sell now\"\n\nIf at least one candidate exists, we pick the month with the highest Gain and say STORE. If none, we say SELL NOW.", explanation: "In words: storing must be profitable, sufficiently likely to pay, and not too risky in the low-price case." },
+      { title: "9. Cash you need now (More options)", formula: "kg sold now = smaller of ( Q , cash needed ÷ P0 ). The rule above is applied to the remaining kg.", explanation: "In words: sell only enough now to meet the cash you need; assess storing for the remaining quantity." },
+      { title: "10. Total money (Amafaranga yose)", formula: "Total gain = Gain (per kg) × kg stored", explanation: "In words: multiply the gain per kilogram by the quantity stored." },
+    ],
+    yourNumbers: "Your numbers / Imibare yawe",
+    exampleFor: "Example for {months} months until {month}",
+    closestNote: "This is the closest option. It did not pass the decision rule.",
+    noForecast: "No forecast available for this crop and harvest month.",
+    inflationInputLabel: "Expected general price rise",
+    sellNowLabel: "Sell now",
+    storeLabel: "Store",
+    gainLabel: "Gain per kg",
+    breakEvenLabel: "Break-even",
+    chanceLabel: "Chance storing pays",
+    totalGainLabel: "Total gain",
+    limitsNote: "The high and low ends of the price range are approximate. They come from how well past seasonal patterns held on our short data history, not from exact price statistics. Spoilage is one input, so we use a single loss factor.",
+  },
   data: {
     title: "Data transparency",
     lowConfidence: "Low confidence: limited data or weak past accuracy.",
@@ -132,6 +184,7 @@ export const labels = {
     heading: "Seasonal price pattern",
     subtitle:
       "Typical national prices by calendar month. This is a pattern, not a guaranteed future price.",
+    inflationNote: "Seasonal pattern after removing general price rises (NISR consumer price index)",
     average: "Average",
     sellAtHarvest: "Sell at harvest",
     sellAfterStoring: "Sell after storing",
@@ -140,6 +193,9 @@ export const labels = {
     monthAxis: "Month",
   },
   reliability: {
+    dataSources: "Data sources",
+    sourceEsoko: "esoko.rw farmgate prices, October 2024 to October 2026.",
+    sourceNisrCpi: "NISR Consumer Price Index (All Rwanda, general index, Feb 2014 = 100, September 2026 release), used to remove general inflation from the price history before identifying seasonal patterns. NISR data is licensed CC BY 4.0.",
     heading: "Additional details: how reliable is this?",
     confidence: "How sure are we?",
     low: "Low",
@@ -157,17 +213,14 @@ export const labels = {
       "In {month} the price could reasonably range from {low} to {high} RWF/kg (approximate).",
     tested: "How we tested it",
     backtest:
-      "We tested this on past months. Our guess was off by about {error}% on average, compared with {baseline}% if we simply assumed prices never change. This is a preliminary test on limited data.",
+      "A seasonal pattern counts as reliable only if its error is at least 10% lower than assuming prices never change. Our historical test error was {error}%, compared with {baseline}% for that baseline. This is a preliminary test on limited data.",
     limits: "Limits you should know",
     limitNational: "Seasonal prices are national, not market-specific.",
     limitCosts:
       "Storage cost and spoilage are your own estimates; we do not have verified storage data.",
     limitRange: "The price range is approximate.",
     limitData:
-      "With more months of data, the forecast improves.",
-    dataSources: "Data sources",
-    dataSourcePrices: "esoko.rw farmgate prices, October 2024 to October 2026.",
-    dataSourceInterest: "National Bank of Rwanda: average lending rate about 16% (2026), used only as the default loan interest.",
+      "Prices were converted using the national consumer price index, which covers all goods, not only food. This may remove a little real seasonal movement, so our seasonal estimate is cautious. Tests use only about 22 months of data and overlap, so they are preliminary.",
     calculation: "How we calculated",
     calcSell:
       "Selling now means using today's price, plus the interest you save by not borrowing to wait.",

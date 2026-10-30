@@ -91,7 +91,8 @@ export default function App() {
   const [quantityText, setQuantityText] = useState("500");
   const [storageCostText, setStorageCostText] = useState("10");
   const [lossText, setLossText] = useState("5");
-  const [interestText, setInterestText] = useState("16");
+  const [interestText, setInterestText] = useState("18");
+  const [inflationText, setInflationText] = useState("0");
   const [cashText, setCashText] = useState("0");
   const [moreOptions, setMoreOptions] = useState(false);
 
@@ -178,6 +179,7 @@ export default function App() {
   const storageCostPerMonth = Number(storageCostText);
   const totalLossPct = Number(lossText);
   const loanInterestPctYear = Number(interestText);
+  const inflationPctYear = Number(inflationText);
   const cashNeeded = Number(cashText);
 
   const validInputs =
@@ -194,6 +196,9 @@ export default function App() {
     totalLossPct < 100 &&
     Number.isFinite(loanInterestPctYear) &&
     loanInterestPctYear >= 0 &&
+    Number.isFinite(inflationPctYear) &&
+    inflationPctYear >= 0 &&
+    inflationPctYear <= 30 &&
     Number.isFinite(cashNeeded) &&
     cashNeeded >= 0;
 
@@ -220,6 +225,7 @@ export default function App() {
       storageCostPerMonth,
       totalLossPct,
       loanInterestPctYear,
+      inflationPctYear,
       cashNeeded,
       minProbability: 0.6,
       maxDownsideShare: 0.1,
@@ -239,6 +245,7 @@ export default function App() {
     storageCostPerMonth,
     totalLossPct,
     loanInterestPctYear,
+    inflationPctYear,
     cashNeeded,
   ]);
 
@@ -337,6 +344,7 @@ export default function App() {
             storageCostText={storageCostText}
             lossText={lossText}
             interestText={interestText}
+            inflationText={inflationText}
             cashText={cashText}
             moreOptions={moreOptions}
             isUsingNationalFallback={isUsingNationalFallback}
@@ -359,6 +367,7 @@ export default function App() {
             onStorageCostChange={setStorageCostText}
             onLossChange={setLossText}
             onInterestChange={setInterestText}
+            onInflationChange={setInflationText}
             onCashChange={setCashText}
             onMoreOptionsChange={setMoreOptions}
           />
@@ -414,6 +423,11 @@ export default function App() {
             hasDataGap
             option={chosenHorizon ?? null}
             month={resultMonth}
+            result={decision}
+            priceNow={priceNow}
+            storageCostPerMonth={storageCostPerMonth}
+            loanInterestPctYear={loanInterestPctYear}
+            inflationPctYear={inflationPctYear}
           />
         </section>
 
