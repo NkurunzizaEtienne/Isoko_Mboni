@@ -8,16 +8,17 @@ export const CONTACT = {
 };
 
 export const TEAM: { name: string; role: string; bio: string }[] = [
-  {
-    name: "Wonder",
-    role: "Agribusiness student, UR-CAFF",
-    bio: "Agricultural economics and agribusiness background. Builds Isoko Mboni from the data to the interface.",
+    {
+    name: "NKURUNZIZA Etienne",
+    role: "Co-founder · Agribusiness and technology",
+    bio: "Combines agricultural economics and technology to build practical digital solutions for the agricultural sector.",
   },
   {
-    name: "Etienne",
-    role: "Agribusiness student, UR-CAFF",
-    bio: "Agribusiness student at the University of Rwanda.",
-  },
+    name: "MUNYAZIKWIYE Claude",
+    role: "Co-worker · Project team",
+    bio: "Contributes to the development of Isoko Mboni and its mission to support better harvest decisions.",
+  }
+  
 ];
 // ==============================================================
 
@@ -31,17 +32,16 @@ export const NAV: { route: Route; label: string }[] = [
 export const SITE = {
   brand: "Isoko Mboni",
   team: "Umuhinzi Mboni",
-  tagline: "Sell now or store? Decide with the numbers.",
+  tagline: "Helping harvest holders make informed decisions about when to sell and when to store.",
   institution: "University of Rwanda (UR-CAFF)",
-  hackathon: "NISR 2026 Big Data Hackathon · Track 1: Agricultural Productivity",
 };
 
 export const HERO = {
-  eyebrow: "NISR 2026 Big Data Hackathon · Agricultural Productivity",
+  eyebrow: "Smarter harvest decisions for Rwandan agriculture",
   titleLine1: "Know when to sell.",
   titleLine2: "Know when to store.",
   subtitle:
-    "Right after harvest, prices are often at their lowest and cash is needed most. Isoko Mboni turns market prices, storage costs, spoilage and loan interest into one clear answer for your crop and your quantity.",
+    "Every harvest is an opportunity. Isoko Mboni helps farmers and other harvest holders decide whether to sell now or store for a better return, using market prices, storage costs, expected losses and financing costs.",
   ctaPrimary: "Open Isoko Desk",
   ctaSecondary: "How it works",
   previewCaption:
@@ -115,7 +115,7 @@ export const CTA_BAND = {
 export const ABOUT = {
   title: "Two agribusiness students. One question every harvest raises.",
   intro:
-    "Umuhinzi Mboni is an initiative of two agribusiness students at the University of Rwanda (UR-CAFF). We built Isoko Mboni for the NISR 2026 Big Data Hackathon, Agricultural Productivity track.",
+    "Umuhinzi Mboni is a team initiative from the University of Rwanda (UR-CAFF). We built Isoko Mboni to help farmers and other harvest holders make informed decisions about when to sell and when to store, using market data and their own costs.",
   problemTitle: "The problem",
   problem:
     "After harvest, many farmers sell immediately because they need cash, and prices are often lowest when everyone sells at once. Storing can pay, but only if the later price covers spoilage, storage costs and the interest on any loan. That is a calculation few people can do on the spot.",
@@ -185,7 +185,7 @@ export const FOOTER = {
   ],
   disclaimer:
     "Isoko Mboni is a prototype. Results are estimates based on about 22 months of price data and the costs you enter. They are not financial advice.",
-  copyright: "© 2026 Umuhinzi Mboni. Built for the NISR 2026 Big Data Hackathon.",
+  copyright: "© 2026 Umuhinzi Mboni. Supporting smarter harvest decisions.",
 };
 
 export const DESK = {
