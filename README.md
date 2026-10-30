@@ -1,75 +1,165 @@
-# React + TypeScript + Vite
+# Isoko Mboni
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Sell now or store? A plain-language decision tool for Rwandan crops.**
 
-Currently, two official plugins are available:
+Built by team **Umuhinzi Mboni** (University of Rwanda, UR-CAFF) for the **NISR 2026 Big Data Hackathon**, Track 1: Agricultural Productivity.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Live app:** https://Isoko-mboni.vercel.app
+- **Open the dashboard directly:** https://.vercel.app/#desk
+- **Full methodology:** [docs/METHODOLOGY.md](docs/METHODOLOGY.md)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## The problem
 
-## Expanding the ESLint configuration
+After harvest, many farmers sell immediately because they need cash, and prices are often lowest when everyone sells at once. Storing can pay, but only if the later price covers three things: the share of the crop that spoils, the cost of storage and handling, and the interest on any loan. Few people can work that out on the spot.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Rwanda's agriculture strategy names this gap directly. The national post-harvest loss rate was 13.8% in 2023, with a target of 5% by 2029, and the sector plan PSTA 5 (2024/25 to 2028/29) has "Inclusive Markets and Post-harvest Management" as one of its priorities (see [Alignment](#alignment-with-national-priorities)).
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## What Isoko Mboni does
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+You enter:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- crop and market
+- harvest month and the longest you are willing to store (1 to 6 months)
+- price now, and **quantity in kg**
+- storage and handling cost (RWF/kg/month)
+- expected total loss over storage (%)
+- loan interest (% per year)
+- optional: the general price rise you expect, and cash you need now
+
+You get an answer in plain language: 
+
+- **STORE** or **SELL NOW**
+- a sentence such as: *"Storing could gain X RWF on Q kg after losses, storage and interest. Best month to sell: M."*
+- the expected price in that month, the **break-even price**, expected spoilage, the downside if prices disappoint, and what storing costs
+- the chance that storing pays, and a clear statement of how reliable the forecast is
+
+The numbers above are examples of the format. Every figure is calculated from the inputs and the data.
+
+## How it works
 
 ```
+esoko.rw farmgate prices ----+
+                             +--> Python pipeline --> 6 small JSON files --> React app (static site)
+NISR consumer price index ---+
+```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+There is no backend. The Python pipeline cleans the prices, removes general inflation using the NISR consumer price index, finds the seasonal pattern and tests it against past months. It writes small JSON files that the web app reads. The sell-or-store calculation runs in the browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Data
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Data | Source | Use |
+|---|---|---|
+| Farmgate prices, 252,986 records | esoko.rw prices API | Seasonal price patterns. Usable window: October 2024 to October 2026 (about 22 months, with no data for August to October 2025) |
+| Consumer Price Index, All Rwanda, Feb 2014 = 100 (Sept 2026 release) | National Institute of Statistics of Rwanda (NISR), CC BY 4.0 | Removes general price rises from the price history. The index rose 20.0% over the 12 months to September 2026 |
+| Average bank lending rate, about 16% in 2026 | National Bank of Rwanda | Default for the loan-interest input (the user can change it) |
+
+The raw price download is **not** in this repository because it contains personal details of price collectors. [docs/METHODOLOGY.md](docs/METHODOLOGY.md) explains how to rebuild everything.
+
+## What our testing found
+
+We tested four storable staple crops. For each one we asked: *does last year's seasonal price change predict this year's better than assuming prices never change?*
+
+| Crop | Our forecast error | Error if prices never change | Result |
+|---|---|---|---|
+| Irish potato | 13.9% | 17.3% | **Pattern is reliable enough to forecast** |
+| Beans | 7.1% | 8.3% | **Pattern is reliable enough to forecast** |
+| Maize | 13.6% | 14.3% | Not reliable: no forecast gain |
+| Rice | 16.0% | 5.2% | Not reliable: prices barely move seasonally |
+
+A crop counts as reliable only if its error is at least 10% below the "no change" error. We chose that margin after seeing the results, and we say so in the methodology. For maize and rice the app does **not** invent a seasonal gain: it shows a zero expected change with a wide range and a "low confidence" label, and the answer is then driven by your own costs.
+
+These tests are preliminary: they use only about 22 months of data, and the individual tests overlap.
+
+## Limits (please read)
+
+- **Short history.** About 22 months of prices with a three-month gap. Seasonal patterns from so little data are weak, and most forecasts are labelled low confidence.
+- **National pattern, not per market.** The seasonal outlook is national. Prices at your market may differ.
+- **The price range is approximate.** The low and high prices come from how well last year's pattern predicted this year's, not from exact price statistics.
+- **Your costs are your inputs.** We have no verified data on storage cost or spoilage. The defaults are examples to be changed. For reference, the national post-harvest loss rate was 13.8% in 2023 and the 2029 government target is 5%.
+- **Inflation adjustment is broad.** We use the all-items consumer price index, not a food-only index, so a small part of real seasonal movement may be removed.
+- **Prototype.** Results are estimates, not financial advice.
+
+## Alignment with national priorities
+
+- **NST2 (2024 to 2029):** aims for a more market-oriented, productive agriculture, with investment in storage, value chains and market access for farmers.
+- **PSTA 5 (2024/25 to 2028/29):** the agriculture sector plan that implements NST2 and is aligned with Vision 2050. One of its priorities is inclusive markets and post-harvest management.
+- **Vision 2050:** Rwanda's path to an upper-middle-income economy by 2035 and a high-income economy by 2050, with agriculture as a source of inclusive wealth creation.
+
+Isoko Mboni supports these goals by helping farmers, cooperatives and traders make an informed storage and selling decision, and by showing clearly what storing costs.
+
+Sources:
+- MINAGRI, PSTA 5 (abridged): https://www.minagri.gov.rw/fileadmin/user_upload/Minagri/Publications/Policies_and_strategies/PSTA_5_Abridged_version_Final.pdf
+- Post-harvest loss figures: https://allafrica.com/stories/202512300006.html
+- NST2 agriculture priorities: https://www.ktpress.rw/2026/03/kagame-criticizes-slow-progress-in-agriculture-urges-shift-from-promises-to-action/
+
+## Who can use it
+
+- **Smallholder farmers and cooperatives:** decide when to sell, and how much to sell now to cover cash needs.
+- **Traders and aggregators:** see what a storage period has to earn to cover costs.
+- **Extension officers:** explain storage economics with the farmer's own numbers.
+- **Planners and policy teams:** see how loan interest and spoilage change the case for storage.
+
+We have not yet tested the tool with farmers. That is the next step.
+
+## How this maps to the judging criteria
+
+| Criterion | Where to look |
+|---|---|
+| Problem understanding and relevance | "The problem" and "Alignment" above; About page in the app |
+| Data use and methodology | "Data" and "What our testing found" above; [docs/METHODOLOGY.md](docs/METHODOLOGY.md): cleaning rules, NISR CPI adjustment, backtest, formulas |
+| Tech innovation | Inflation-adjusted seasonal forecasts with a backtest and a stated reliability rule; a decision model with break-even price, probability that storing pays, downside check and cash split |
+| Usability and design | Isoko Desk: inputs on the left and all results visible on one screen; plain-language answers; mobile layout |
+| Tangible impact | "Who can use it" above; works from public data and costs the user knows |
+
+## Run it locally
+
+Web app:
 
 ```
+cd web
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # production build
+```
+
+Rebuild the data (Python 3.10 or newer):
+
+```
+cd pipeline
+pip install -r requirements.txt
+python fetch_prices.py       # downloads about 253,000 rows to data/raw_prices.jsonl (resumable)
+python check_crops.py        # converts to data/raw_prices.pkl and prints coverage per crop
+# download the NISR CPI file and save it as pipeline/data/CPI_time_series_September_2026.xls
+python build_data.py         # writes pipeline/out/*.json
+# copy the JSON files from pipeline/out into web/public/data/
+```
+
+NISR CPI file: https://statistics.gov.rw/sites/default/files/documents/2026-10/CPI_time_series_September_2026.xls
+
+## Repository structure
+
+```
+pipeline/    Python: download, cleaning, CPI adjustment, seasonal outlook, backtest, JSON export
+web/         React + TypeScript + Vite + Tailwind CSS + Recharts
+  public/data/   the JSON files the app reads
+  src/lib/decision.ts   the sell-or-store calculation
+docs/        METHODOLOGY.md
+```
+
+Stack: Python (pandas, numpy), React, TypeScript, Vite, Tailwind CSS, Recharts, deployed on Vercel.
+
+## Tools and AI assistance
+
+We used AI assistants (Claude by Anthropic and ChatGPT) to help write and review code and documentation. The problem choice, data sources, modelling decisions and the reliability rules are ours, and the results reported here come from running the code in this repository.
+
+## Team
+
+**Umuhinzi Mboni**, an initiative of two agribusiness students at the University of Rwanda (UR-CAFF): **Wonder** and **Etienne**. Use the Contact page in the app to reach us.
+
+## Credits
+
+Price data: esoko.rw. Consumer price index: National Institute of Statistics of Rwanda (NISR), licensed CC BY 4.0. Lending rate reference: National Bank of Rwanda.
+
+*Last updated 30 October 2026.*
