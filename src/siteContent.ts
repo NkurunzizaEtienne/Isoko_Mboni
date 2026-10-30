@@ -190,5 +190,5 @@ export const FOOTER = {
 
 export const DESK = {
   title: "Isoko Desk",
-  subtitle: "Enter your numbers on the left. Your answer updates on the right.",
+  subtitle: "Fill This Form With Your Numbers. Scroll to See Your The Recommendations.",
 };
