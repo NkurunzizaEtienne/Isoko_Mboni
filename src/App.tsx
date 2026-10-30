@@ -91,7 +91,7 @@ export default function App() {
   const [quantityText, setQuantityText] = useState("500");
   const [storageCostText, setStorageCostText] = useState("10");
   const [lossText, setLossText] = useState("5");
-  const [interestText, setInterestText] = useState("18");
+  const [interestText, setInterestText] = useState("16");
   const [cashText, setCashText] = useState("0");
   const [moreOptions, setMoreOptions] = useState(false);
 
@@ -414,10 +414,6 @@ export default function App() {
             hasDataGap
             option={chosenHorizon ?? null}
             month={resultMonth}
-            result={decision}
-            priceNow={priceNow}
-            storageCostPerMonth={storageCostPerMonth}
-            loanInterestPctYear={loanInterestPctYear}
           />
         </section>
 
