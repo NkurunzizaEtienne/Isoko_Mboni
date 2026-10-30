@@ -168,4 +168,15 @@ We used AI assistants (Claude by Anthropic and ChatGPT) to help write and review
 
 Price data: esoko.rw. Consumer price index: National Institute of Statistics of Rwanda (NISR), licensed CC BY 4.0. Lending rate reference: National Bank of Rwanda.
 
+### AI-Assisted Development and Human Oversight
+
+AI tools were integrated into the development workflow as technical support, while the project’s direction, core decisions and implementation remained under the responsibility of the team.
+
+- **Claude (Anthropic):** Assisted with agricultural price-data analysis, pandas-based data processing, debugging and refining data-analysis workflows.
+- **ChatGPT (OpenAI):** Assisted with React and TypeScript UI debugging, interface refinements, component improvements and frontend problem-solving.
+
+The team used these tools to accelerate experimentation, troubleshoot technical challenges and improve development efficiency. AI-generated suggestions and code were reviewed, adapted and tested before adoption. Data-source selection, analytical assumptions, decision-model design, interpretation of results and final project decisions remained team responsibilities.
+
+**Our approach:** AI accelerated the development process; human judgment remained responsible for the product. Isoko Mboni is a team-led decision-support solution, not an AI-generated price prediction system. Its recommendations are based on documented agricultural price data, explicit economic assumptions and transparent decision rules.
+
 *Last updated 30 October 2026.*
