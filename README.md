@@ -12,9 +12,15 @@ Built by team **Umuhinzi Mboni** (University of Rwanda, UR-CAFF) for the **NISR 
 
 ## The problem
 
-After harvest, many farmers sell immediately because they need cash, and prices are often lowest when everyone sells at once. Storing can pay, but only if the later price covers three things: the share of the crop that spoils, the cost of storage and handling, and the interest on any loan. Few people can work that out on the spot.
+## The Sell-or-Store Decision: A Small Decision with Major Economic Consequences
 
-Rwanda's agriculture strategy names this gap directly. The national post-harvest loss rate was 13.8% in 2023, with a target of 5% by 2029, and the sector plan PSTA 5 (2024/25 to 2028/29) has "Inclusive Markets and Post-harvest Management" as one of its priorities (see [Alignment](#alignment-with-national-priorities)).
+Harvesting a crop should be the beginning of earning from it—not the moment a farmer has to accept whatever price the market offers. Yet for many farmers, the decision is difficult: sell immediately and secure cash at today's price, or store the harvest and wait for a potentially better price? Waiting is not automatically profitable. A future price increase must be large enough to compensate for storage and handling costs, crop deterioration, and the cost of money tied up or borrowed during storage. Without a clear way to compare these factors, farmers risk selling too early and missing potential income, or storing too long and losing money.
+
+**Isoko Mboni turns this decision into an economic comparison.** It uses available crop-price data and user-provided storage assumptions to estimate the financial outcome of selling now versus storing for a selected period. It shows the expected return, break-even price, probability of a better outcome, and the risks behind its recommendation. This can help farmers and cooperatives assess whether storage is economically worthwhile, plan when to sell, and make more informed use of limited cash and storage capacity. The aim is not to promise higher prices or eliminate market risk; it is to make the trade-offs visible before a decision is made.
+
+This problem directly connects to Rwanda's national development agenda. **NST2 (2024–2029)** calls for stronger agricultural productivity and value chains, and explicitly targets reducing post-harvest losses to below 5% through better handling, market linkages, and agro-processing. **Vision 2050** sets the country's long-term ambition for a more prosperous, productive and high-income economy. Its agricultural transformation pathway is advanced through **PSTA 5 (2024/25–2028/29)**, which identifies *Inclusive Markets and Post-harvest Management for Sustainable Agri-Food Systems* as a priority. PSTA 5 also emphasizes stronger market linkages, post-harvest infrastructure, value addition, and digitized agri-food systems. Isoko Mboni contributes at the decision-support level: helping turn market information into practical, farm-level decisions that can support better income management, more efficient use of storage, and stronger market participation.
+
+[Read more about Isoko Mboni's alignment with national priorities](https://github.com/NkurunzizaEtienne/Isoko_Mboni#alignment-with-national-priorities).
 
 ## What Isoko Mboni does
 
