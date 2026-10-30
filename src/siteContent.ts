@@ -2,8 +2,8 @@ import type { Route } from "./lib/useHashRoute";
 
 // ================= EDIT THESE BEFORE YOU PUSH =================
 export const CONTACT = {
-  email: "your-email@example.com",
-  phone: "+250 7XX XXX XXX",
+  email: "enkurun ziza2002@gmail.com",
+  phone: "+250 792 573 184",
   location: "Kigali, Rwanda",
 };
 
