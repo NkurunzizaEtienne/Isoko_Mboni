@@ -7,9 +7,10 @@ Built by team **Umuhinzi Mboni** (University of Rwanda, UR-CAFF) for the **NISR 
 - **Live app:** https://isoko-mboni.vercel.app
 - **Open the dashboard directly:** https://isoko-mboni.vercel.app/#desk
 - **Full methodology:** [docs/METHODOLOGY.md](docs/METHODOLOGY.md)
+- **A demo on how to use this platform to compare sell or store decisions:** https://youtu.be/OdMZu1DDvNE?si=00ba336oakdSlPct
 
 ![Isoko Mboni home page: "Know when to sell. Know when to store." with a seasonal price signal for Irish potato](docs/images/01-home.png)
-*Figure 1. The Isoko Mboni home page. The "Market signal" card shows the inflation-adjusted seasonal price pattern for Irish potato, built from the esoko.rw price records and the NISR consumer price index.*
+_Figure 1. The Isoko Mboni home page. The "Market signal" card shows the inflation-adjusted seasonal price pattern for Irish potato, built from the esoko.rw price records and the NISR consumer price index._
 
 ---
 
@@ -31,21 +32,21 @@ It is a hard decision for three reasons.
 
 Take a farmer with **500 kg of beans** at a harvest price of **1,033 RWF/kg** (about 516,500 RWF), a storage cost of 10 RWF/kg/month, 5% expected loss and an 18% loan:
 
-- Storing until **December** is *not* worth it: the expected price (**975 RWF**) is below the break-even price (**1,076 RWF**). The right answer is **SELL NOW**.
-- Storing until **April** *is* worth it: the expected price (**1,243 RWF**) is above the break-even price (**1,121 RWF**). The tool estimates a gain of **58,646 RWF**, about 11% of the harvest-day value.
+- Storing until **December** is _not_ worth it: the expected price (**975 RWF**) is below the break-even price (**1,076 RWF**). The right answer is **SELL NOW**.
+- Storing until **April** _is_ worth it: the expected price (**1,243 RWF**) is above the break-even price (**1,121 RWF**). The tool estimates a gain of **58,646 RWF**, about 11% of the harvest-day value.
 
 Same farmer, same crop, same harvest price. The best decision flips depending on the storage period, and nothing in the market price alone tells the farmer which side of the line they are on. See [Figures 3 and 4](#what-the-answer-looks-like).
 
 ### Why a decision tool, and why now
 
-We tested whether seasonal price patterns are predictable enough to guide this decision, using **252,986 farmgate price records** from esoko.rw and the NISR consumer price index (which rose **20.0%** in the 12 months to September 2026, so raw prices alone are misleading). The answer is *sometimes*:
+We tested whether seasonal price patterns are predictable enough to guide this decision, using **252,986 farmgate price records** from esoko.rw and the NISR consumer price index (which rose **20.0%** in the 12 months to September 2026, so raw prices alone are misleading). The answer is _sometimes_:
 
-| Crop | Our forecast error | Error if prices never change | Verdict |
-|---|---|---|---|
-| Irish potato | 13.9% | 17.3% | Seasonal pattern is useful |
-| Beans | 7.1% | 8.3% | Seasonal pattern is useful |
-| Maize | 13.6% | 14.3% | Not reliable |
-| Rice | 16.0% | 5.2% | Not reliable |
+| Crop         | Our forecast error | Error if prices never change | Verdict                    |
+| ------------ | ------------------ | ---------------------------- | -------------------------- |
+| Irish potato | 13.9%              | 17.3%                        | Seasonal pattern is useful |
+| Beans        | 7.1%               | 8.3%                         | Seasonal pattern is useful |
+| Maize        | 13.6%              | 14.3%                        | Not reliable               |
+| Rice         | 16.0%              | 5.2%                         | Not reliable               |
 
 Two lessons follow. Storage can pay for some crops, and a tool that pretended to forecast every crop would be misleading. So **Isoko Mboni turns the decision into an economic comparison** and is honest about reliability: for maize and rice it shows no invented seasonal gain, a wide range and a "low confidence" label, so the answer is driven by the user's own costs.
 
@@ -53,11 +54,11 @@ The aim is not to promise higher prices or remove market risk. It is to make the
 
 ### How this connects to Rwanda's development agenda
 
-| National priority | What it asks for | How Isoko Mboni contributes |
-|---|---|---|
-| **NST2 (2024 to 2029)** | Cut post-harvest losses from 13.8% (2023) to below 5% by 2029; a more productive, market-oriented agriculture | Puts the loss rate into every decision: the user's expected storage loss is a direct input, and the tool shows what spoilage costs in RWF |
-| **PSTA 5 (2024/25 to 2028/29)**, the sector plan that implements NST2 | Inclusive markets and post-harvest management; stronger market linkages; digitized agri-food systems | Turns public price data into a farm-level selling decision that works on a phone, with no backend and no sign-up |
-| **Vision 2050** | A high-income economy by 2050, with agriculture as a source of inclusive wealth creation | Gives smallholders the same break-even logic traders and lenders already use, so more of the value created after harvest stays with the farmer |
+| National priority                                                     | What it asks for                                                                                              | How Isoko Mboni contributes                                                                                                                    |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NST2 (2024 to 2029)**                                               | Cut post-harvest losses from 13.8% (2023) to below 5% by 2029; a more productive, market-oriented agriculture | Puts the loss rate into every decision: the user's expected storage loss is a direct input, and the tool shows what spoilage costs in RWF      |
+| **PSTA 5 (2024/25 to 2028/29)**, the sector plan that implements NST2 | Inclusive markets and post-harvest management; stronger market linkages; digitized agri-food systems          | Turns public price data into a farm-level selling decision that works on a phone, with no backend and no sign-up                               |
+| **Vision 2050**                                                       | A high-income economy by 2050, with agriculture as a source of inclusive wealth creation                      | Gives smallholders the same break-even logic traders and lenders already use, so more of the value created after harvest stays with the farmer |
 
 Isoko Mboni works at the **decision-support level**. It does not build storage or roads, but it helps farmers, cooperatives and extension officers decide when storage is worth using, which is what makes post-harvest investment pay off.
 
@@ -76,17 +77,17 @@ You enter:
 - optional: the general price rise you expect, and cash you need now
 
 ![Isoko Desk input form with crop, market, harvest month, storage period, price, quantity, costs, loan interest and expected price rise](docs/images/04-desk-inputs.png)
-*Figure 2. Isoko Desk inputs. This example: Bean Shyushya at Kimironko market, harvested in November, 500 kg at 1,033 RWF/kg, stored for up to 3 months with a 10 RWF/kg/month storage cost, 5% expected loss and 18% loan interest. Costs are examples to be replaced with the user's own.*
+_Figure 2. Isoko Desk inputs. This example: Bean Shyushya at Kimironko market, harvested in November, 500 kg at 1,033 RWF/kg, stored for up to 3 months with a 10 RWF/kg/month storage cost, 5% expected loss and 18% loan interest. Costs are examples to be replaced with the user's own._
 
 ### What the answer looks like
 
-You get an answer in plain language: **STORE** or **SELL NOW**, a sentence such as *"Storing could gain X RWF on Q kg after losses, storage and interest. Best month to sell: M."*, the expected price in that month, the **break-even price**, expected spoilage, the downside if prices disappoint, the chance that storing pays, and a clear statement of how reliable the forecast is.
+You get an answer in plain language: **STORE** or **SELL NOW**, a sentence such as _"Storing could gain X RWF on Q kg after losses, storage and interest. Best month to sell: M."_, the expected price in that month, the **break-even price**, expected spoilage, the downside if prices disappoint, the chance that storing pays, and a clear statement of how reliable the forecast is.
 
 ![SELL NOW result: expected December price of 975 RWF is below the break-even price of 1,076 RWF](docs/images/05-result-sell-now.png)
-*Figure 3. A SELL NOW result. The expected December price (975 RWF) is below the break-even price (1,076 RWF), so storing is unlikely to pay after losses, storage and interest. The tool shows the "closest storing option" so the user can see how near it came.*
+_Figure 3. A SELL NOW result. The expected December price (975 RWF) is below the break-even price (1,076 RWF), so storing is unlikely to pay after losses, storage and interest. The tool shows the "closest storing option" so the user can see how near it came._
 
 ![STORE result: storing could gain 58,646 RWF on 500 kg, best month April, expected price 1,243 RWF versus break-even 1,121 RWF](docs/images/06-result-store.png)
-*Figure 4. A STORE result. The expected April price (1,243 RWF) is above the break-even price (1,121 RWF), giving an estimated gain of 58,646 RWF on 500 kg. Both results show a "How reliable is this?" link and a "How is this calculated?" link, so no answer is a black box.*
+_Figure 4. A STORE result. The expected April price (1,243 RWF) is above the break-even price (1,121 RWF), giving an estimated gain of 58,646 RWF on 500 kg. Both results show a "How reliable is this?" link and a "How is this calculated?" link, so no answer is a black box._
 
 The numbers in this README are examples of the format. Every figure in the app is calculated from the inputs and the data.
 
@@ -103,24 +104,24 @@ There is no backend. The Python pipeline cleans the prices, removes general infl
 The calculation is shown to the user in English and Kinyarwanda, with every symbol defined, so an extension officer or cooperative leader can check it by hand.
 
 ![Method panel listing the symbols used: inflation, P0, C, r, h, Ph, L and Q, with English and Kinyarwanda labels](docs/images/07-formulas.png)
-*Figure 5. The in-app method panel ("Formulas used: is storing worth it?"). It defines every symbol: harvest price (P0), storage cost (C), monthly interest (r = annual rate ÷ 12), months stored (h), expected price after h months (Ph), monthly loss (L), quantity (Q) and expected general price rise.*
+_Figure 5. The in-app method panel ("Formulas used: is storing worth it?"). It defines every symbol: harvest price (P0), storage cost (C), monthly interest (r = annual rate ÷ 12), months stored (h), expected price after h months (Ph), monthly loss (L), quantity (Q) and expected general price rise._
 
 ## Data
 
-| Data | Source | Use |
-|---|---|---|
-| Farmgate prices, 252,986 records | esoko.rw prices API | Seasonal price patterns. Usable window: October 2024 to October 2026 (about 22 months, with no data for August to October 2025) |
-| Consumer Price Index, All Rwanda, Feb 2014 = 100 (Sept 2026 release) | National Institute of Statistics of Rwanda (NISR), CC BY 4.0 | Removes general price rises from the price history. The index rose 20.0% over the 12 months to September 2026 |
-| Average bank lending rate, about 16% in 2026 | National Bank of Rwanda | Default for the loan-interest input (the user can change it) |
+| Data                                                                 | Source                                                       | Use                                                                                                                             |
+| -------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| Farmgate prices, 252,986 records                                     | esoko.rw prices API                                          | Seasonal price patterns. Usable window: October 2024 to October 2026 (about 22 months, with no data for August to October 2025) |
+| Consumer Price Index, All Rwanda, Feb 2014 = 100 (Sept 2026 release) | National Institute of Statistics of Rwanda (NISR), CC BY 4.0 | Removes general price rises from the price history. The index rose 20.0% over the 12 months to September 2026                   |
+| Average bank lending rate, about 16% in 2026                         | National Bank of Rwanda                                      | Default for the loan-interest input (the user can change it)                                                                    |
 
 ![Data we use: esoko.rw farmgate prices, NISR Consumer Price Index, and National Bank of Rwanda lending rate](docs/images/03-data-we-use.png)
-*Figure 6. The "Data we use" section of the app. Each source is named with its role in the model and its licence where it applies.*
+_Figure 6. The "Data we use" section of the app. Each source is named with its role in the model and its licence where it applies._
 
 The raw price download is **not** in this repository because it contains personal details of price collectors. [docs/METHODOLOGY.md](docs/METHODOLOGY.md) explains how to rebuild everything.
 
 ## What our testing found
 
-For each of four storable staple crops we asked: *does last year's seasonal price change predict this year's better than assuming prices never change?* The results are in the table in [the problem section](#why-a-decision-tool-and-why-now).
+For each of four storable staple crops we asked: _does last year's seasonal price change predict this year's better than assuming prices never change?_ The results are in the table in [the problem section](#why-a-decision-tool-and-why-now).
 
 A crop counts as reliable only if its error is at least 10% below the "no change" error. We chose that margin after seeing the results, and we say so in the methodology. For maize and rice the app does **not** invent a seasonal gain: it shows a zero expected change with a wide range and a "low confidence" label, and the answer is then driven by your own costs.
 
@@ -144,6 +145,7 @@ These tests are preliminary: they use only about 22 months of data, and the indi
 Isoko Mboni supports these goals by helping farmers, cooperatives and traders make an informed storage and selling decision, and by showing clearly what storing costs.
 
 Sources:
+
 - MINAGRI, PSTA 5 (abridged): https://www.minagri.gov.rw/fileadmin/user_upload/Minagri/Publications/Policies_and_strategies/PSTA_5_Abridged_version_Final.pdf
 - NST2 post-harvest loss target (13.8% in 2023 to below 5% by 2029): https://allafrica.com/stories/202508130166.html
 - NST2 agriculture priorities: https://newtimes.co.rw/article/20046/news/agriculture/nst2-how-govt-plans-to-drive-agriculture-forward
@@ -160,13 +162,13 @@ We have not yet tested the tool with farmers. That is the next step.
 
 ## How this maps to the judging criteria
 
-| Criterion | Where to look |
-|---|---|
-| Problem understanding and relevance | "The problem" and "Alignment" above; About page in the app (Figure 7) |
-| Data use and methodology | "Data" and "What our testing found" above; [docs/METHODOLOGY.md](docs/METHODOLOGY.md): cleaning rules, NISR CPI adjustment, backtest, formulas |
-| Tech innovation | Inflation-adjusted seasonal forecasts with a backtest and a stated reliability rule; a decision model with break-even price, probability that storing pays, downside check and cash split |
-| Usability and design | Isoko Desk: inputs on the left and all results visible on one screen; plain-language answers; English and Kinyarwanda; mobile layout |
-| Tangible impact | "Who can use it" above; works from public data and costs the user knows |
+| Criterion                           | Where to look                                                                                                                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Problem understanding and relevance | "The problem" and "Alignment" above; About page in the app (Figure 7)                                                                                                                     |
+| Data use and methodology            | "Data" and "What our testing found" above; [docs/METHODOLOGY.md](docs/METHODOLOGY.md): cleaning rules, NISR CPI adjustment, backtest, formulas                                            |
+| Tech innovation                     | Inflation-adjusted seasonal forecasts with a backtest and a stated reliability rule; a decision model with break-even price, probability that storing pays, downside check and cash split |
+| Usability and design                | Isoko Desk: inputs on the left and all results visible on one screen; plain-language answers; English and Kinyarwanda; mobile layout                                                      |
+| Tangible impact                     | "Who can use it" above; works from public data and costs the user knows                                                                                                                   |
 
 ## Run it locally
 
@@ -225,10 +227,10 @@ The team used these tools to accelerate experimentation, troubleshoot technical 
 **Umuhinzi Mboni**, an initiative of two agribusiness students at the University of Rwanda (UR-CAFF): **J.Claude** and **Etienne**. Use the Contact page in the app to reach us.
 
 ![About page: "Two agribusiness students. One question every harvest raises." with The problem and Our answer cards](docs/images/02-about.png)
-*Figure 7. The About page of the app, summarising the problem (farmers sell early for cash, when prices are lowest) and the team's answer.*
+_Figure 7. The About page of the app, summarising the problem (farmers sell early for cash, when prices are lowest) and the team's answer._
 
 ## Credits
 
 Price data: esoko.rw. Consumer price index: National Institute of Statistics of Rwanda (NISR), licensed CC BY 4.0. Lending rate reference: National Bank of Rwanda.
 
-*Last updated 4 November 2026.*
+_Last updated 4 November 2026._
